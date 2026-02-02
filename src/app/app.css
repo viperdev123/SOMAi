@@ -1,0 +1,16 @@
+
+.app-container { 
+  display: flex; 
+}
+
+.main-content {
+  margin-left: 70px; /* ค่าเริ่มต้นตอนหุบ */
+  width: calc(100% - 70px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* เมื่อมี class .pushed ให้ขยับ margin เพิ่ม */
+.main-content.pushed {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+}

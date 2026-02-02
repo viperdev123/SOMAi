@@ -1,0 +1,60 @@
+<div class="header">
+    <span class="header-label">AI Marketing</span>
+    <span class="sub-content-label">สร้างคอนเทนต์การตลาดหลายแพลตฟอร์มด้วย AI</span>
+    <div class="content">
+        <div class="flex flex-column">
+            <span class="content-label">สร้าง Campaign</span>
+            <span class="sub-content-label">ให้ AI สร้างคอนเทนต์ที่น่าสนใจสำหรับแคมเปญการตลาดของคุณ</span>
+        </div>
+        <div class="form">
+            <div class="flex col-12 p-0">
+                <div class="form-content col-6 p-0 pr-1">
+                    <span>ชื่อสินค้า</span>
+                    <input type="text" pInputText fluid />
+                </div>
+                <div class="form-content col-6 p-0 pl-1">
+                    <span>กลุ่มเป้าหมาย</span>
+                    <input type="text" pInputText fluid />
+                </div>
+            </div>
+            <div class="form-content mb-3">
+                <span class="block mb-2">แพลตฟอร์ม</span>
+
+                <p-multiSelect [options]="platforms" [(ngModel)]="selectedPlatforms"
+                    defaultLabel="เลือกแพลตฟอร์มที่จะเจน" optionLabel="name" display="chip" [style]="{'width':'100%'}"
+                    [filter]="false" [showClear]="true">
+
+                    <ng-template let-platform pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <i [class]="platform.icon" [style.color]="platform.color" style="font-size: 1.2rem;"></i>
+                            <div>{{ platform.name }}</div>
+                        </div>
+                    </ng-template>
+
+                    <ng-template let-value pTemplate="selectedItems">
+                        <div *ngIf="!selectedPlatforms || selectedPlatforms.length === 0" class="inline-block">
+                            เลือกแพลตฟอร์มที่จะเจน
+                        </div>
+
+                        <div *ngIf="selectedPlatforms && selectedPlatforms.length > 0" class="flex gap-2">
+                            <div *ngFor="let option of selectedPlatforms"
+                                class="surface-200 px-2 py-1 border-round flex align-items-center gap-2">
+                                <i [class]="option.icon" [style.color]="option.color"></i>
+                                <span class="text-sm font-bold">{{ option.name }}</span>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </p-multiSelect>
+            </div>
+            <div class="form-content">
+                <span>Key Message</span>
+                <textarea rows="5" cols="30" pTextarea [autoResize]="true"></textarea>
+            </div>
+            <div class="flex align-items-center justify-content-center">
+                <p-button styleClass="my-ai-button" severity="contrast" [raised]="true" label="Generate with AI"
+                    icon="pi pi-bolt" />
+            </div>
+        </div>
+    </div>
+</div>

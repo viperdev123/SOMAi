@@ -1,0 +1,42 @@
+<nav class="sidebar" [class.expanded]="isExpanded">
+  <div class="sidebar-header">
+    <div class="logo-wrapper" *ngIf="isExpanded">
+      <i class="pi pi-bolt logo-icon"></i>
+      <span class="logo-text">AI Agent</span>
+    </div>
+    
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <i [class]="isExpanded ? 'pi pi-chevron-left' : 'pi pi-bars'"></i>
+    </button>
+  </div>
+
+  <ul class="nav-list">
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" routerLink="/dashboard">
+        <i class="pi pi-home nav-icon"></i>
+        <span class="nav-text" *ngIf="isExpanded">Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" routerLink="/create">
+        <i class="pi pi-plus-circle nav-icon"></i>
+        <span class="nav-text" *ngIf="isExpanded">Create Campaign</span>
+      </a>
+    </li>
+
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" routerLink="/reviews">
+        <i class="pi pi-comments nav-icon"></i>
+        <span class="nav-text" *ngIf="isExpanded">Review & Edit</span>
+      </a>
+    </li>
+
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" routerLink="/history">
+        <i class="pi pi-history nav-icon"></i>
+        <span class="nav-text" *ngIf="isExpanded">History</span>
+      </a>
+    </li>
+  </ul>
+</nav>

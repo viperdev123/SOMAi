@@ -1,0 +1,109 @@
+.relative {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.btn-review {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.twiter-icon {
+    font-size: 2rem;
+    color: #000000;
+}
+
+.text-icon-ig {
+    font-weight: 500;
+}
+
+:host ::ng-deep .p-carousel-indicator-list {
+    padding: 10px 0;
+    gap: 2px;
+}
+
+:host ::ng-deep .p-carousel-indicator-button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #dbdbdb;
+    margin: 0 2px;
+    transition: background-color 0.2s;
+}
+
+:host ::ng-deep .p-carousel-indicator-active .p-carousel-indicator-button {
+    background-color: #5577ff;
+}
+
+:host ::ng-deep .p-galleria-nav-button {
+    color: black;
+    background: white;
+}
+
+:host ::ng-deep .p-galleria-nav-button:hover {
+    background: white;
+    color: rgb(172, 172, 172);
+}
+
+:host ::ng-deep .p-carousel-content-container {
+    overflow: unset;
+}
+
+.aspect-ratio-16-9 {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-3-2 {
+    aspect-ratio: 3 / 2;
+}
+
+.gap-1px {
+    gap: 2px;
+}
+
+.group:hover .group-hover\:bg-blue-50 {
+    background-color: rgba(29, 155, 240, 0.1);
+}
+
+.group:hover .group-hover\:bg-green-50 {
+    background-color: rgba(0, 186, 124, 0.1);
+}
+
+.group:hover .group-hover\:bg-pink-50 {
+    background-color: rgba(249, 24, 128, 0.1);
+}
+
+.tiktok-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    object-position: center;
+    background: black;
+    bottom: 0px;
+}
+
+.shadow-text-strong {
+  text-shadow:
+    0 0 2px rgba(86, 86, 86, 0.9)
+}
+
+.edit-caption{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #5577ff;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    margin-top: 10px;
+    transition: .3s;
+}
+
+.edit-caption:hover{
+    color: #00197f;
+}

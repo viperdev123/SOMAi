@@ -1,0 +1,566 @@
+<div class="header">
+    <span class="header-label">Content Review Board</span>
+    <span class="sub-content-label">ตรวจสอบและอนุมัติคอนเทนต์ที่ AI สร้างขึ้นสำหรับแต่ละแพลตฟอร์ม</span>
+    <div class="content flex flex-row" style="overflow-x: scroll;">
+        <div class="mb-4 flex items-center justify-center">
+            <div class="surface-card shadow-2 border-round-xl w-25rem flex flex-column"
+                style="max-width: 500px; overflow: hidden; min-height: 100%;">
+                <div class="flex justify-content-between align-items-center p-3">
+                    <div class="flex gap-2 align-items-center">
+                        <div class="border-circle overflow-hidden flex align-items-center justify-content-center bg-blue-100"
+                            style="width: 40px; height: 40px;">
+                            <i class="pi pi-facebook text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="flex flex-column">
+                            <span class="font-bold text-900 text-sm">AI Marketing Page</span>
+                            <div class="flex align-items-center gap-1 text-600 text-xs">
+                                <span>Just now</span>
+                                <span>&bull;</span>
+                                <i class="pi pi-globe" style="font-size: 10px;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @if (uploadedImages.length > 0) {
+                        <i (click)="clearImages()"
+                            class="pi pi-trash text-red-500 cursor-pointer hover:bg-red-50 p-2 border-round"
+                            pTooltip="ลบรูปทั้งหมด"></i>
+                        }
+                        @if (uploadedImages.length === 0) {
+                        <i class="pi pi-ellipsis-h text-600 cursor-pointer"></i>
+                        }
+                    </div>
+                </div>
+
+                <div class="px-3 pb-2">
+                    <div>
+                        {{text}}
+                    </div>
+                    <button
+                        class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700"
+                        (click)="openEdit('facebook')">
+                        <i class="pi pi-pencil"></i>
+                        <span>แก้ไขแคปชัน</span>
+                    </button>
+                </div>
+
+                <div
+                    class="w-full bg-gray-100 relative min-h-[200px] flex align-items-center justify-content-center cursor-pointer hover:surface-200 transition-colors">
+
+                    <input #fileInput type="file" multiple (change)="onFileSelect($event)" accept="image/*" hidden>
+
+                    <!-- EMPTY STATE -->
+                    @if (uploadedImages.length === 0) {
+                    <div (click)="triggerFileUpload()"
+                        class="flex flex-column align-items-center py-6 text-600 w-full h-full">
+                        <i class="pi pi-images text-4xl mb-2"></i>
+                        <span class="font-semibold">เพิ่มรูปภาพ</span>
+                        <span class="text-xs">คลิกเพื่ออัปโหลด</span>
+                    </div>
+                    }
+
+                    <!-- 1 IMAGE -->
+                    @if (uploadedImages.length === 1) {
+                    <img [src]="uploadedImages[0].itemImageSrc" class="w-full block"
+                        style="object-fit: cover; max-height: 500px;" (click)="openGallery(0)">
+                    }
+
+                    <!-- 2 IMAGES -->
+                    @if (uploadedImages.length === 2) {
+                    <div class="grid w-full" style="height:20rem">
+                        <div class="col-6 p-0 border-right-1 surface-border overflow-hidden relative">
+                            <img [src]="uploadedImages[0].itemImageSrc" class="absolute w-full h-full"
+                                style="object-fit: cover;" (click)="openGallery(0)">
+                        </div>
+                        <div class="col-6 p-0 overflow-hidden relative">
+                            <img [src]="uploadedImages[1].itemImageSrc" class="absolute w-full h-full"
+                                style="object-fit: cover;" (click)="openGallery(1)">
+                        </div>
+                    </div>
+                    }
+
+                    <!-- 3+ IMAGES -->
+                    @if (uploadedImages.length >= 3) {
+                    <div class="grid w-full" style="height:20rem">
+                        <!-- Big Left -->
+                        <div class="col-8 p-0 border-right-1 surface-border overflow-hidden relative">
+                            <img [src]="uploadedImages[0].itemImageSrc" class="absolute w-full h-full"
+                                style="object-fit: cover;" (click)="openGallery(0)">
+                        </div>
+
+                        <!-- Right Stack -->
+                        <div class="col-4 p-0 flex flex-column">
+                            <div class="flex-1 border-bottom-1 surface-border overflow-hidden relative">
+                                <img [src]="uploadedImages[1].itemImageSrc" class="absolute w-full h-full"
+                                    style="object-fit: cover;" (click)="openGallery(1)">
+                            </div>
+
+                            <div class="flex-1 overflow-hidden relative">
+                                <img [src]="uploadedImages[2].itemImageSrc" class="absolute w-full h-full"
+                                    style="object-fit: cover;" (click)="openGallery(2)">
+
+                                @if (uploadedImages.length > 3) {
+                                <div (click)="openGallery(2)"
+                                    class="absolute top-0 left-0 w-full h-full bg-black-alpha-50 flex align-items-center justify-content-center text-white text-2xl font-bold">
+                                    +{{ uploadedImages.length - 3 }}
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <div class="flex justify-content-between align-items-center px-3 py-2">
+                    <div class="flex align-items-center gap-1">
+                        <div class="bg-blue-500 border-circle flex align-items-center justify-content-center"
+                            style="width: 18px; height: 18px;">
+                            <i class="pi pi-thumbs-up-fill text-white" style="font-size: 10px;"></i>
+                        </div>
+                        <span class="text-600 text-sm">2.5K</span>
+                    </div>
+                    <div class="text-600 text-sm">54 Comments</div>
+                </div>
+
+                <div class="flex justify-content-between px-2 py-1 border-top-1 surface-border">
+                    <button
+                        class="p-2 flex-1 border-none surface-0 cursor-pointer hover:surface-100 border-round text-600 font-semibold transition-duration-200">
+                        <i class="pi pi-thumbs-up mr-2"></i>Like
+                    </button>
+                    <button
+                        class="p-2 flex-1 border-none surface-0 cursor-pointer hover:surface-100 border-round text-600 font-semibold transition-duration-200">
+                        <i class="pi pi-comment mr-2"></i>Comment
+                    </button>
+                    <button
+                        class="p-2 flex-1 border-none surface-0 cursor-pointer hover:surface-100 border-round text-600 font-semibold transition-duration-200">
+                        <i class="pi pi-share-alt mr-2"></i>Share
+                    </button>
+                </div>
+                <div class="p-3 flex gap-2 border-top-1 surface-border container-footer-btn mt-auto">
+                    <button class="reGenerate-btn w-6 bg-white"><i class="pi pi-sync"></i> Regenerate</button>
+                    <button (click)="showDialog()" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
+                        Approve</button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 flex items-center justify-center">
+            <div class="surface-card shadow-2 border-round-xl w-25rem overflow-hidden flex flex-column">
+                <div class="flex justify-content-between align-items-center p-3">
+                    <div class="flex align-items-center gap-2">
+                        <div class="flex align-items-center justify-content-center border-circle p-1"
+                            style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); width: 42px; height: 42px;">
+                            <div
+                                class="surface-card border-circle flex align-items-center justify-content-center w-full h-full">
+                                <i class="pi pi-instagram" style="color: #bc1888; font-size: 1.2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-column">
+                            <span class="font-bold text-sm text-900">MyCafeBrand</span>
+                            <span class="text-xs text-600">Sponsored</span>
+                        </div>
+                    </div>
+                    <div>
+                        @if (igImages.length > 0) {
+                        <i (click)="clearIgImages()"
+                            class="pi pi-trash text-red-500 cursor-pointer hover:bg-red-50 p-2 border-round"
+                            pTooltip="ลบรูปทั้งหมด"></i>
+                        }
+                        @if (igImages.length === 0) {
+                        <i class="pi pi-ellipsis-h text-600 cursor-pointer"></i>
+                        }
+                    </div>
+                </div>
+
+                <div class="w-full bg-gray-50 relative min-h-[300px] flex align-items-center justify-content-center">
+
+                    <input #igFileInput type="file" multiple (change)="onIgFileSelect($event)" accept="image/*" hidden>
+
+                    @if (igImages.length === 0) {
+                    <div (click)="triggerIgFileUpload()"
+                        class="flex flex-column align-items-center justify-content-center py-6 text-600 w-full h-full cursor-pointer hover:surface-200 transition-colors"
+                        style="min-height: 350px;">
+                        <i class="pi pi-images text-4xl mb-2"></i>
+                        <span class="font-semibold">เพิ่มรูปภาพ</span>
+                        <span class="text-xs">คลิกเพื่ออัปโหลด</span>
+                    </div>
+                    }
+
+                    @if (igImages.length > 0) {
+                    <div class="w-full relative group">
+                        <p-carousel [value]="igImages" [numVisible]="1" [numScroll]="1" [circular]="false"
+                            [showNavigators]="false" [showIndicators]="true">
+                            <ng-template let-item pTemplate="item">
+                                <div class="w-full flex align-items-center justify-content-center overflow-hidden"
+                                    style="aspect-ratio: 1/1;">
+                                    <img [src]="item.itemImageSrc" class="w-full h-full"
+                                        style="object-fit: cover; display: block;">
+                                </div>
+                            </ng-template>
+                        </p-carousel>
+                    </div>
+                    }
+                </div>
+                <div class="flex justify-content-between align-items-center px-3 pt-3 pb-2">
+                    <div class="flex gap-3">
+                        <div class="flex justify-content-center align-items-center gap-1">
+                            <i
+                                class="pi pi-heart text-2xl cursor-pointer hover:text-pink-500 transition-duration-200"></i>
+                            <span class="text-icon-ig">4,033</span>
+                        </div>
+                        <div class="flex justify-content-center align-items-center gap-1">
+                            <i class="pi pi-comment text-2xl cursor-pointer hover:text-500 transition-duration-200"></i>
+                            <span class="text-icon-ig">14</span>
+                        </div>
+
+                        <i class="pi pi-send text-2xl cursor-pointer hover:text-500 transition-duration-200"
+                            style="transform: rotate(0deg);"></i>
+                    </div>
+                    <i class="pi pi-bookmark text-2xl cursor-pointer hover:text-500 transition-duration-200"></i>
+                </div>
+
+                <div class="px-3 pb-3">
+                    <div class="text-sm line-height-3 text-900">
+                        <span class="font-bold mr-2">MyCafeBrand</span>
+                        <div>
+                            {{text2}}
+                        </div>
+                    </div>
+                    <button type="button" (click)="openEdit('instagram')"
+                        class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700">
+                        <i class="pi pi-pencil text-sm"></i>
+                        <span>แก้ไขแคปชัน</span>
+                    </button>
+
+                    <div class="text-xs text-500 mt-2 uppercase">2 hours ago</div>
+                </div>
+
+                <div class="p-3 flex gap-2 border-top-1 surface-border mt-auto">
+                    <button class="reGenerate-btn w-6 bg-white"><i class="pi pi-sync"></i> Regenerate</button>
+                    <button class="ai-generate-btn w-6"><i class="pi pi-check"></i> Approve</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="mb-4 flex items-center justify-center">
+            <div class="tiktok-card shadow-2 border-round-2xl overflow-hidden flex flex-column"
+                style="width: 340px; color: white;">
+                <div class="relative w-full flex-shrink-0" style="aspect-ratio: 9/16;">
+                    <div
+                        class="absolute top-0 left-0 w-full z-2 flex justify-content-center pt-4 text-white gap-3 text-sm font-bold shadow-text">
+                        <span class="opacity-60">Following</span>
+                        <span>|</span>
+                        <span>For You</span>
+                    </div>
+                    @if(tiktokImages.length > 0) {
+                    <button (click)="clearTikTokImages()"
+                        class="absolute z-5 right-0 mr-4 mt-4 bg-black-alpha-40 text-white border-none border-circle w-2rem h-2rem flex align-items-center justify-content-center cursor-pointer hover:bg-black-alpha-60 transition-colors">
+                        <i class="pi pi-trash text-red-500 cursor-pointer hover:bg-red-50 p-2 border-round"
+                            pTooltip="ลบรูปทั้งหมด"></i>
+                    </button>
+                    }
+                    <div
+                        class="w-full h-full absolute top-0 left-0 flex align-items-center justify-content-center bg-gray-900">
+                        <input #tiktokFileInput type="file" multiple (change)="onTikTokFileSelect($event)"
+                            accept="image/*" hidden>
+                        @if (tiktokImages.length === 0) {
+                        <div (click)="triggerTikTokUpload()"
+                            class="flex flex-column align-items-center text-gray-400 cursor-pointer hover:text-white transition-colors">
+                            <i class="pi pi-images text-4xl mb-2"></i>
+                            <span class="font-semibold">เพิ่มรูปภาพ</span>
+                            <span class="text-xs">คลิกเพื่ออัปโหลด</span>
+                        </div>
+                        }
+                        @if (tiktokImages.length > 0) {
+                        <p-carousel [value]="tiktokImages" [numVisible]="1" [numScroll]="1" [circular]="false"
+                            [showNavigators]="false" [showIndicators]="true" class="tiktok-carousel w-full"
+                            style="position: absolute; bottom: 220px; left: 0;">
+                            <ng-template let-item pTemplate="item">
+                                <div
+                                    class="w-full h-full relative flex align-items-center justify-content-center bg-black">
+                                    <img [src]="item.itemImageSrc" class="tiktok-img">
+                                </div>
+                            </ng-template>
+                        </p-carousel>
+                        }
+                    </div>
+                    <div class="absolute right-0 bottom-0 mb-4 mr-2 flex flex-column align-items-center gap-3 z-5">
+                        <div class="relative mb-2">
+                            <div class="border-circle overflow-hidden border-2 border-white"
+                                style="width: 45px; height: 45px;">
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute left-0 w-full flex justify-content-center" style="bottom: -10px;">
+                                <i class="pi pi-plus-circle text-white bg-red-500 border-circle"
+                                    style="font-size: 1.2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex flex-column align-items-center gap-1">
+                            <i
+                                class="pi pi-heart-fill text-3xl text-white shadow-text-strong cursor-pointer hover:text-red-500"></i>
+                            <span class="text-xs font-bold text-white shadow-text-strong">89.2B</span>
+                        </div>
+                        <div class="flex flex-column align-items-center gap-1">
+                            <i class="pi pi-comment text-3xl text-white shadow-text-strong cursor-pointer"></i>
+                            <span class="text-xs font-bold text-white shadow-text-strong">1M</span>
+                        </div>
+                        <div class="flex flex-column align-items-center gap-1">
+                            <i
+                                class="pi pi-bookmark-fill text-3xl text-white shadow-text-strong cursor-pointer hover:text-yellow-400"></i>
+                            <span class="text-xs font-bold text-white shadow-text-strong">21.6K</span>
+                        </div>
+                        <div class="flex flex-column align-items-center gap-1">
+                            <i class="pi pi-send text-3xl text-white shadow-text-strong cursor-pointer"></i>
+                            <span class="text-xs font-bold text-white shadow-text-strong">549.2K</span>
+                        </div>
+                        <div class="mt-auto bg-gray-900 border-circle border-3 border-gray-800"
+                            style="width: 45px; height: 45px;">
+                            <div
+                                class="w-full h-full bg-black border-circle flex align-items-center justify-content-center overflow-hidden">
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    class="w-full h-full object-cover pi-spin">
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-full p-3 z-2 bg-gradient-to-t from-black-alpha-60 to-transparent">
+                        <div class="text-white font-bold mb-1 shadow-text">@MyBrand</div>
+                        <div class="text-white text-sm line-clamp-2 shadow-text mb-2" style="max-width: 80%;">
+                            {{ text3 || 'Caption will appear here...' }}
+                        </div>
+                        <button type="button" (click)="openEdit('tiktok')"
+                            class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700">
+                            <i class="pi pi-pencil text-sm"></i>
+                            <span>แก้ไขแคปชัน</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-2 p-3 mt-auto border-top-1 surface-border">
+                    <button class="reGenerate-btn text-xs w-6 justify-content-center">
+                        <i class="pi pi-sync mr-1"></i> Regenerate
+                    </button>
+                    <button class="ai-generate-btn text-xs w-6 justify-content-center">
+                        <i class="pi pi-check mr-1"></i> Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 flex items-center justify-center">
+            <div class="twitter-card shadow-2 border-round-xl flex flex-column surface-card" style="width: 450px;">
+                <div class="p-3 flex gap-3">
+                    <div class="flex-shrink-0">
+                        <div class="border-circle overflow-hidden bg-gray-200" style="width: 40px; height: 40px;">
+                            <img src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <div class="flex-grow-1 flex flex-column gap-1" style="min-width: 0;">
+
+                        <div class="flex align-items-center justify-content-between">
+                            <div class="flex align-items-center gap-1 text-base overflow-hidden">
+                                <span class="font-bold text-900 white-space-nowrap">MyBrand</span>
+                                <i class="pi pi-verified text-blue-500 text-xs"></i>
+                                <span
+                                    class="text-500 text-sm ml-1 text-overflow-ellipsis overflow-hidden white-space-nowrap">@mybrand_official
+                                    · 2h</span>
+                            </div>
+                            <i class="pi pi-ellipsis-h text-500 cursor-pointer hover:text-blue-500"></i>
+                        </div>
+
+                        <div>
+                            {{twitterText}}
+                        </div>
+                        <button type="button" (click)="openEdit('twitter')"
+                            class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700">
+                            <i class="pi pi-pencil text-sm"></i>
+                            <span>แก้ไขแคปชัน</span>
+                        </button>
+                        <div
+                            class="w-full bg-gray-100 relative min-h-[200px] flex align-items-center justify-content-center cursor-pointer hover:surface-200 transition-colors">
+
+                            <input #twitterFileInput type="file" multiple (change)="onTwitterFileSelect($event)"
+                                accept="image/*" hidden>
+
+                            @if (twitterImages.length > 0) {
+                            <button (click)="clearTwitterImages()"
+                                class="absolute z-5 top-0 right-0 m-2 bg-black-alpha-70 text-white border-circle w-2rem h-2rem flex align-items-center justify-content-center border-none cursor-pointer hover:bg-black-alpha-90 transition-colors">
+                                <i class="pi pi-trash text-red-500 cursor-pointer hover:bg-red-50 p-2 border-round"
+                                    pTooltip="ลบรูปทั้งหมด" tooltipPosition="top"></i>
+                            </button>
+                            }
+
+                            @if (twitterImages.length === 0) {
+                            <div (click)="triggerTwitterUpload()"
+                                class="flex flex-column align-items-center py-6 text-600 w-full h-full">
+                                <i class="pi pi-images text-4xl mb-2"></i>
+                                <span class="font-semibold">เพิ่มรูปภาพ (ไม่เกิน 4 ภาพ)</span>
+                                <span class="text-xs">คลิกเพื่ออัปโหลด</span>
+                            </div>
+                            }
+
+                            <div class="w-full border-round-xl overflow-hidden border-1 surface-border"
+                                [ngClass]="{'aspect-ratio-16-9': twitterImages.length === 1, 'aspect-ratio-3-2': twitterImages.length > 1}"
+                                style="display: flex;">
+
+                                @if (twitterImages.length === 1) {
+                                <img [src]="twitterImages[0].itemImageSrc" class="w-full h-full object-cover">
+                                }
+
+                                @if (twitterImages.length === 2) {
+                                <div class="flex w-full h-full gap-1px">
+                                    <img [src]="twitterImages[0].itemImageSrc" class="flex-1 w-6 h-full object-cover">
+                                    <img [src]="twitterImages[1].itemImageSrc" class="flex-1 w-6 h-full object-cover">
+                                </div>
+                                }
+
+                                @if (twitterImages.length === 3) {
+                                <div class="flex w-full h-full gap-1px">
+                                    <img [src]="twitterImages[0].itemImageSrc" class="flex-1 w-6 h-full object-cover">
+                                    <div class="flex flex-column flex-1 w-6 h-full gap-1px">
+                                        <img [src]="twitterImages[1].itemImageSrc"
+                                            class="flex-1 h-full w-full object-cover">
+                                        <img [src]="twitterImages[2].itemImageSrc"
+                                            class="flex-1 h-full w-full object-cover">
+                                    </div>
+                                </div>
+                                }
+
+                                @if (twitterImages.length === 4) {
+                                <div class="flex flex-column w-full h-full gap-1px">
+                                    <div class="flex flex-1 w-full h-full gap-1px">
+                                        <img [src]="twitterImages[0].itemImageSrc"
+                                            class="flex-1 w-6 h-full object-cover">
+                                        <img [src]="twitterImages[1].itemImageSrc"
+                                            class="flex-1 w-6 h-full object-cover">
+                                    </div>
+                                    <div class="flex flex-1 w-full h-full gap-1px">
+                                        <img [src]="twitterImages[2].itemImageSrc"
+                                            class="flex-1 w-6 h-full object-cover">
+                                        <img [src]="twitterImages[3].itemImageSrc"
+                                            class="flex-1 w-6 h-full object-cover">
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-between mt-3 px-1" style="max-width: 90%;">
+                            <div
+                                class="flex align-items-center gap-1 cursor-pointer text-500 hover:text-blue-500 transition-colors group">
+                                <div
+                                    class="p-2 border-circle group-hover:bg-blue-50 flex align-items-center justify-content-center transition-colors">
+                                    <i class="pi pi-comment"></i>
+                                </div>
+                                <span class="text-xs">24</span>
+                            </div>
+                            <div
+                                class="flex align-items-center gap-1 cursor-pointer text-500 hover:text-green-500 transition-colors group">
+                                <div
+                                    class="p-2 border-circle group-hover:bg-green-50 flex align-items-center justify-content-center transition-colors">
+                                    <i class="pi pi-sync"></i>
+                                </div>
+                                <span class="text-xs">12</span>
+                            </div>
+                            <div
+                                class="flex align-items-center gap-1 cursor-pointer text-500 hover:text-pink-500 transition-colors group">
+                                <div
+                                    class="p-2 border-circle group-hover:bg-pink-50 flex align-items-center justify-content-center transition-colors">
+                                    <i class="pi pi-heart"></i>
+                                </div>
+                                <span class="text-xs">145</span>
+                            </div>
+                            <div
+                                class="flex align-items-center gap-1 cursor-pointer text-500 hover:text-blue-500 transition-colors group">
+                                <div
+                                    class="p-2 border-circle group-hover:bg-blue-50 flex align-items-center justify-content-center transition-colors">
+                                    <i class="pi pi-chart-bar"></i>
+                                </div>
+                                <span class="text-xs">2.4K</span>
+                            </div>
+                            <div
+                                class="flex align-items-center gap-1 cursor-pointer text-500 hover:text-blue-500 transition-colors group">
+                                <div
+                                    class="p-2 border-circle group-hover:bg-blue-50 flex align-items-center justify-content-center transition-colors">
+                                    <i class="pi pi-share-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="border-top-1 surface-border p-3 flex gap-2 mt-auto">
+                    <button class="reGenerate-btn text-xs w-6 justify-content-center"><i class="pi pi-sync mr-1"></i>
+                        Regenerate</button>
+                    <button class="ai-generate-btn text-xs w-6 justify-content-center"><i class="pi pi-check mr-1"></i>
+                        Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card flex justify-content-center">
+    <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '35rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="false" [draggable]="false">
+
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center gap-2">
+                <i class="pi pi-exclamation-triangle text-orange-500 text-2xl"></i>
+                <span class="font-bold text-lg text-900">Warning / คำเตือน</span>
+            </div>
+        </ng-template>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <p class="m-0 text-700 line-height-3">
+                คุณแน่ใจหรือไม่ที่จะดำเนินการนี้? <br>
+                การกระทำนี้ไม่สามารถย้อนกลับได้ (Cannot be undone).
+            </p>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div class="flex justify-content-end gap-2">
+                <p-button label="Cancel" (click)="showError()" severity="secondary" />
+                <p-button label="Confirm" (click)="showSuccess()" severity="success" [outlined]="true"
+                    icon="pi pi-check" />
+            </div>
+        </ng-template>
+
+    </p-dialog>
+</div>
+<p-toast />
+
+<p-galleria [(visible)]="displayGallery" [value]="uploadedImages" [activeIndex]="activeIndex"
+    (activeIndexChange)="onActiveIndexChange($event)" [fullScreen]="true" [circular]="true" [showItemNavigators]="true"
+    [showThumbnails]="true" [numVisible]="7">
+    <ng-template pTemplate="item" let-dummyItem>
+        <div class="flex align-items-center justify-content-center w-full h-full"
+            style="min-height: 80vh; background: white;">
+            <img [src]="uploadedImages[activeIndex]?.itemImageSrc"
+                style="width: 100%; max-height: 80vh; object-fit: contain; display: block;" />
+        </div>
+    </ng-template>
+    <ng-template pTemplate="thumbnail" let-item>
+        <img [src]="item.thumbnailImageSrc" style="display: block; width: 100px; height: 60px; object-fit: cover;">
+    </ng-template>
+</p-galleria>
+
+<p-dialog header="แก้ไขแคปชั่น" [(visible)]="visibleEditCaption" [modal]="true" [style]="{ width: '50rem' }">
+    <form [formGroup]="activeForm" class="flex flex-column gap-3">
+        <textarea pInputTextarea rows="6" formControlName="postText" [autoResize]="true">
+    </textarea>
+        <small class="text-red-500" *ngIf="activeForm.get('postText')?.invalid && activeForm.get('postText')?.touched">
+            ข้อความไม่ถูกต้อง
+        </small>
+        <div class="flex justify-content-between align-items-center mt-2">
+            <small>
+                {{ activeForm.get('postText')?.value?.length || 0 }} ตัวอักษร
+            </small>
+            <div class="flex gap-2">
+                <button pButton type="button" label="ยกเลิก" (click)="visibleEditCaption=false"></button>
+                <button pButton type="button" label="บันทึก" (click)="saveCaption()"></button>
+            </div>
+        </div>
+    </form>
+</p-dialog>

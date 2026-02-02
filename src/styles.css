@@ -1,1 +1,141 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&display=swap');
+
+body {
+  font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif;
+  background-color: #F2F6FF;
+  color: #2D3142;
+}
+
+
+.header {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  padding: 10px;
+}
+
+.header-label {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.content {
+  background-color: white;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid #2b20cc;
+  border-radius: 15px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  gap: 20px;
+}
+
+.content-label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.sub-content-label {
+  color: rgb(62, 64, 71);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+p-button {
+    width: 100%;
+}
+
+button.p-ripple.my-ai-button.p-button.p-button-contrast.p-button-raised.p-component {
+    width: 100%;
+}
+
+.p-button .p-button-icon {
+  transition: transform 0.2s ease;
+}
+
+.p-button:hover .p-button-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* 1. กำหนดความกว้างของแถบ Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;  /* สำหรับแนวตั้ง */
+  height: 8px; /* สำหรับแนวนอน */
+}
+
+/* 2. ส่วนพื้นหลังของ Scrollbar (Track) */
+::-webkit-scrollbar-track {
+  background: transparent; /* สีดำจางๆ หรือสีเดียวกับพื้นหลังแอป */
+}
+
+/* 3. ตัวเลื่อน (Thumb) */
+::-webkit-scrollbar-thumb {
+  background: #333; /* สีดำเทา */
+  border-radius: 10px; /* ทำให้โค้งมน */
+  border: 2px solid #1e1e1e; /* เพิ่มขอบสีเดียวกับ Track เพื่อให้ดูมีช่องว่าง (Padding effect) */
+}
+
+/* 4. เมื่อเอาเมาส์ไปวางบนตัวเลื่อน */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* สว่างขึ้นเล็กน้อยเวลา Hover */
+}
+
+.ai-generate-btn {
+  background: linear-gradient(90deg, #5644F9 0%, #B929F3 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 12px 12px;
+  color: white;
+  font-weight: 600;
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(185, 41, 243, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ai-generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(185, 41, 243, 0.6);
+}
+
+.reGenerate-btn {
+  background: none;
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 50px;
+  padding: 12px 12px;
+  color: rgb(34, 34, 34);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.reGenerate-btn:hover i {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.reGenerate-btn i {
+  transition: transform 0.5s ease;
+}
