@@ -1,1 +1,47 @@
-<p>history-page works!</p>
+<div class="p-4">
+    <h2 class="text-2xl font-bold mb-4">ประวัติการใช้งาน</h2>
+    <p-button label="รีเฟรช" [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-refresh'" (click)="refreshHistory()"
+        [disabled]="isLoading" severity="secondary" />
+    <p-treetable [value]="historyData" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,25]" class="w-full">
+
+        <!-- HEADER -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th>วันที่</th>
+                <th>เวลา</th>
+                <th>แพลตฟอร์ม</th>
+                <th>ลิ้ง</th>
+            </tr>
+        </ng-template>
+
+        <!-- BODY -->
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr>
+                <td>{{ rowData.Date }}</td>
+                <td>{{ rowData.Time }}</td>
+                <td>{{ rowData.Platform }}</td>
+                <td>
+                    <a [href]="rowData.Url" target="_blank" rel="noopener noreferrer"
+                        class="text-blue-500 hover:underline">
+                        เปิดลิงก์
+                    </a>
+                </td>
+            </tr>
+        </ng-template>
+
+
+        <!-- EMPTY MESSAGE -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4">
+                    <div class="flex flex-column align-items-center justify-content-center gap-2 p-4 text-500">
+                        <i class="pi pi-inbox text-5xl"></i>
+                        <span>ไม่พบข้อมูล</span>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+    </p-treetable>
+
+</div>
