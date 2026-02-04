@@ -1,28 +1,31 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HistoryService } from '../service/history-service';
-import { TreeTableModule } from 'primeng/treetable';
-import { TreeNode } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators'
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-history-page',
   standalone: true,
-  imports: [CommonModule, TreeTableModule, Button],
+  imports: [
+    CommonModule,
+    TableModule,
+    Button
+  ],
   templateUrl: './history-page.html',
   styleUrl: './history-page.css',
 })
 export class HistoryPage implements OnInit {
 
-  historyData: TreeNode[] = [];
+  historyData: any[] = [];
   isLoading = false;
 
   constructor(
     private historyService: HistoryService,
     private cdr: ChangeDetectorRef,
 
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadHistory();
@@ -30,7 +33,6 @@ export class HistoryPage implements OnInit {
 
   loadHistory() {
     this.isLoading = true;
-
     this.historyService.getData()
       .pipe(
         finalize(() => {
@@ -41,7 +43,7 @@ export class HistoryPage implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('History data loaded:', response);
-          this.historyData = response.map(item => ({ data: item }));
+          this.historyData = response;
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -51,6 +53,7 @@ export class HistoryPage implements OnInit {
   }
 
   refreshHistory() {
+    this.historyService.clearCache(); 
     this.loadHistory();
   }
 }

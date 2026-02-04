@@ -1,11 +1,11 @@
 <nav class="sidebar" [class.expanded]="isExpanded">
   <div class="sidebar-header">
     <div class="logo-wrapper" *ngIf="isExpanded">
-      <i class="pi pi-bolt logo-icon"></i>
-      <span class="logo-text">AI Agent</span>
+      <img src="android-chrome-512x512.png" alt="SOMAi Logo" style="width: 40px; height: auto;">
+      <!-- <span class="logo-text">SOMAi</span> -->
     </div>
     
-    <button class="toggle-btn" (click)="toggleSidebar()">
+    <button class="toggle-btn" (click)="toggleSidebar()" style="margin-left: auto;">
       <i [class]="isExpanded ? 'pi pi-chevron-left' : 'pi pi-bars'"></i>
     </button>
   </div>

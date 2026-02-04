@@ -1,47 +1,52 @@
-<div class="p-4">
-    <h2 class="text-2xl font-bold mb-4">ประวัติการใช้งาน</h2>
-    <p-button label="รีเฟรช" [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-refresh'" (click)="refreshHistory()"
-        [disabled]="isLoading" severity="secondary" />
-    <p-treetable [value]="historyData" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,25]" class="w-full">
+<div class="header">
+    <span class="header-label">ประวัติการใช้งาน</span>
+    <span class="sub-content-label">ตรวจสอบประวัติการใช้งานของคุณ</span>
+    <div class="content">
+        <p-button label="รีเฟรช" [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-refresh'"
+            (click)="refreshHistory()" [disabled]="isLoading" severity="contrast" class="mb-3">
+        </p-button>
 
-        <!-- HEADER -->
-        <ng-template pTemplate="header">
-            <tr>
-                <th>วันที่</th>
-                <th>เวลา</th>
-                <th>แพลตฟอร์ม</th>
-                <th>ลิ้ง</th>
-            </tr>
-        </ng-template>
+        <p-table [value]="historyData" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5,10,25]"
+            responsiveLayout="scroll" class="p-datatable-sm">
 
-        <!-- BODY -->
-        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-            <tr>
-                <td>{{ rowData.Date }}</td>
-                <td>{{ rowData.Time }}</td>
-                <td>{{ rowData.Platform }}</td>
-                <td>
-                    <a [href]="rowData.Url" target="_blank" rel="noopener noreferrer"
-                        class="text-blue-500 hover:underline">
-                        เปิดลิงก์
-                    </a>
-                </td>
-            </tr>
-        </ng-template>
+            <!-- HEADER -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>วันที่</th>
+                    <th>เวลา</th>
+                    <th>แพลตฟอร์ม</th>
+                    <th>ลิงก์</th>
+                </tr>
+            </ng-template>
 
+            <!-- BODY -->
+            <ng-template pTemplate="body" let-row>
+                <tr>
+                    <td>{{ row.Date | date:'d/M/yyyy' }}</td>
+                    <td>{{ row.Time }}</td>
+                    <td>{{ row.Platform }}</td>
+                    <td>
+                        <a *ngIf="row.Url; else noLink" [href]="row.Url" target="_blank" rel="noopener noreferrer"
+                            class="text-blue-500 hover:underline">
+                            เปิดลิงก์
+                        </a>
+                        <ng-template #noLink>-</ng-template>
+                    </td>
+                </tr>
+            </ng-template>
 
-        <!-- EMPTY MESSAGE -->
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="4">
-                    <div class="flex flex-column align-items-center justify-content-center gap-2 p-4 text-500">
-                        <i class="pi pi-inbox text-5xl"></i>
-                        <span>ไม่พบข้อมูล</span>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
+            <!-- EMPTY -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4">
+                        <div class="flex flex-column align-items-center justify-content-center gap-2 p-4 text-500">
+                            <i class="pi pi-inbox text-5xl"></i>
+                            <span>ไม่พบข้อมูล</span>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
 
-    </p-treetable>
-
+        </p-table>
+    </div>
 </div>
