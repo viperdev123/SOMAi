@@ -17,6 +17,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class SideBar implements OnInit {
   items: MenuItem[] | undefined;
   isExpanded = true;
+  currentUser: any = null;
 
   ngOnInit() {
     this.items = [
@@ -25,6 +26,12 @@ export class SideBar implements OnInit {
       { label: 'My Campaigns', icon: 'pi pi-list', routerLink: '/campaigns' },
       { label: 'S ettings', icon: 'pi pi-cog', routerLink: '/settings' }
     ];
+
+    this.currentUser = {
+      name: 'Apiwich P.',
+      email: 'apiwichpree@gmail.com',
+      avatar: 'https://i.pravatar.cc/100'
+    };
   }
 
   toggleSidebar() {

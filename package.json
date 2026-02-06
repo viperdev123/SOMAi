@@ -36,6 +36,8 @@
     "@ngx-translate/http-loader": "^17.0.0",
     "@primeng/themes": "^21.0.2",
     "express": "^5.1.0",
+    "lottie-web": "^5.13.0",
+    "ngx-lottie": "^21.1.0",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^21.0.2",

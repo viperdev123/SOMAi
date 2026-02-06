@@ -5,6 +5,8 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 
 import { routes } from './app.routes';
 
@@ -19,9 +21,13 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Lara,
         options: {
-          darkModeSelector: false   
+          darkModeSelector: 'body'
         }
       }
+    }),
+
+    provideLottieOptions({
+      player: () => player
     })
   ]
 };

@@ -2,6 +2,12 @@
 @import "primeicons/primeicons.css";
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&display=swap');
 
+
+:root {
+  --p-primary-color: #000000;
+  --p-primary-contrast-color: #ffffff;
+}
+
 body {
   font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif;
   background-color: #F2F6FF;

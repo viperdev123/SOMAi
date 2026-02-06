@@ -4,7 +4,7 @@
       <img src="android-chrome-512x512.png" alt="SOMAi Logo" style="width: 40px; height: auto;">
       <!-- <span class="logo-text">SOMAi</span> -->
     </div>
-    
+
     <button class="toggle-btn" (click)="toggleSidebar()" style="margin-left: auto;">
       <i [class]="isExpanded ? 'pi pi-chevron-left' : 'pi pi-bars'"></i>
     </button>
@@ -39,4 +39,19 @@
       </a>
     </li>
   </ul>
+  <!-- USER PROFILE SECTION -->
+  <div class="sidebar-profile" *ngIf="currentUser">
+    <div class="profile-content">
+      <img [src]="currentUser.avatar || 'https://i.pravatar.cc/100'" class="profile-avatar" />
+      <div class="profile-info" *ngIf="isExpanded">
+        <div class="profile-name">{{ currentUser.name }}</div>
+        <div class="profile-email">{{ currentUser.email }}</div>
+      </div>
+    </div>
+    <button class="logout-btn" *ngIf="isExpanded">
+      <i class="pi pi-sign-out"></i>
+    </button>
+  </div>
+
+
 </nav>
