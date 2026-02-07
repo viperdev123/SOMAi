@@ -1,8 +1,8 @@
 <div class="header">
     <span class="header-label">Content Review Board</span>
     <span class="sub-content-label">ตรวจสอบและอนุมัติคอนเทนต์ที่ AI สร้างขึ้นสำหรับแต่ละแพลตฟอร์ม</span>
-    <div class="content flex flex-row" style="overflow-x: scroll;" *ngIf="generateData;">
-        <div class="mb-4 flex items-center justify-center" #facebook>
+    <div class="content flex flex-row" style="overflow-x: scroll;" *ngIf="generateData?.generated_content?.length;">
+        <div class="mb-4 flex items-center justify-center" *ngIf="availablePlatforms.has('Facebook')">
             <div class="surface-card shadow-2 border-round-xl w-25rem flex flex-column"
                 style="max-width: 500px; overflow: hidden; min-height: 100%;">
                 <div class="flex justify-content-between align-items-center p-3">
@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center" #instagram>
+        <div class="mb-4 flex items-center justify-center" *ngIf="availablePlatforms.has('Instagram')">
             <div class="surface-card shadow-2 border-round-xl w-25rem overflow-hidden flex flex-column">
                 <div class="flex justify-content-between align-items-center p-3">
                     <div class="flex align-items-center gap-2">
@@ -242,7 +242,7 @@
 
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center" #tiktok>
+        <div class="mb-4 flex items-center justify-center" *ngIf="availablePlatforms.has('Tiktok')">
             <div class="tiktok-card shadow-2 border-round-2xl overflow-hidden flex flex-column"
                 style="width: 340px; color: white;">
                 <div class="relative w-full flex-shrink-0" style="aspect-ratio: 9/20;">
@@ -346,7 +346,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center" #twitter>
+        <div class="mb-4 flex items-center justify-center" *ngIf="availablePlatforms.has('X')">
             <div class="twitter-card shadow-2 border-round-xl flex flex-column surface-card" style="width: 450px;">
                 <div class="p-3 flex gap-3">
                     <div class="flex-shrink-0">
@@ -500,14 +500,14 @@
             </div>
         </div>
     </div>
-    <div class="content justify-content-center align-items-center" *ngIf="!generateData">
+    <div class="content justify-content-center align-items-center" *ngIf="!generateData?.generated_content?.length">
         <div class="lottie-wrapper">
             <ng-lottie [options]="lottieOptions"></ng-lottie>
         </div>
         <span>ระบบยังไม่มีข้อมูลจาก AI กรุณาสร้างคอนเทนต์ก่อนเพื่อเข้าสู่ขั้นตอน Review
         </span>
-        <button pButton type="button" icon="pi pi-plus" label="สร้างคอนเทนต์ใหม่"
-            class="p-button-rounded" (click)="goToCreate()" severity="contrast" >
+        <button pButton type="button" icon="pi pi-plus" label="สร้างคอนเทนต์ใหม่" class="p-button-rounded"
+            (click)="goToCreate()" severity="contrast">
         </button>
         <ul class="empty-steps">
             <li>เลือกแพลตฟอร์ม</li>

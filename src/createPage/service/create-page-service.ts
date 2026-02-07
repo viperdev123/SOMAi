@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class CreatePageService {
 
-  private n8nUrl = 'https://chronic-midnight-strategy-dsc.trycloudflare.com';
+  private n8nUrl = 'https://corporation-self-notified-sharon.trycloudflare.com';
 
   constructor(private http: HttpClient) { }
 

@@ -61,10 +61,11 @@ export class Review implements OnDestroy, OnInit {
     private reviewStateService: ReviewService
   ) { }
 
-  facebookCaption: string = '☕ Start your morning right with our Premium Coffee Blend! ✨Crafted for the discerning professional who values quality and sustainability. Every sip tells astory of ethical sourcing and expert roasting.#CoffeeLovers #MorningRitual #PremiumCoffee';
-  instagramCaption: string = 'Your daily dose of perfection ☕✨Ethically sourced. Expertly roasted. Perfectly crafted for professionals who demand excellence.Tap to discover your new morning ritual 👆#PremiumCoffee #CoffeeCulture #MorningVibes #Lifestyle';
-  tiktokCaption: string = 'POV: You just discovered the perfect coffee ☕✨This isn\'t just coffee - it\'s a whole vibe 🔥Ethically sourced beans that actually taste PREMIUM 💯Young professionals get it 🎯#CoffeeTok #MorningRoutine #PremiumCoffee #ProductivityHacks';
-  twitterCaption: string = "Just tried this new cafe! ☕️ The atmosphere is amazing and the coffee is top tier. 🚀 \n\nHighly recommended! #CoffeeLover #CafeVibes";
+  availablePlatforms = new Set<string>();
+  facebookCaption!: string;
+  instagramCaption!: string
+  tiktokCaption!: string;
+  twitterCaption!: string;
   uploadedImages: ImageItem[] = [];
   visible: boolean = false;
   displayGallery: boolean = false;
@@ -84,12 +85,14 @@ export class Review implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.initForms();
-    this.generateData = this.reviewStateService.getData();
-    // if (!this.generateData) {
-    //   this.router.navigate(['/create']);
-    //   return;
-    // }
-    console.log('Review data:', this.generateData);
+    this.getDataFromAi();
+    console.log('Generate Data:', this.generateData);
+  }
+
+  ngOnChanges() {
+    if (this.generateData) {
+      this.getDataFromAi();
+    }
   }
 
   initForms() {
@@ -400,5 +403,36 @@ export class Review implements OnDestroy, OnInit {
     this.router.navigate(['/create']);
   }
 
+  getDataFromAi() {
+    this.generateData = this.reviewStateService.getData();
+    const contents = this.generateData?.generated_content || [];
 
+    contents.forEach((item: any) => {
+      const platform = item?.json?.platform;
+      const text = item?.json?.content?.parts?.[0]?.text || '';
+
+      if (!platform) return;
+
+      this.availablePlatforms.add(platform);
+
+      switch (platform) {
+        case 'Facebook':
+          this.facebookCaption = text;
+          this.facebookForm.patchValue({ postText: text });
+          break;
+        case 'Instagram':
+          this.instagramCaption = text;
+          this.instagramForm.patchValue({ postText: text });
+          break;
+        case 'Tiktok':
+          this.tiktokCaption = text;
+          this.tiktokForm.patchValue({ postText: text });
+          break;
+        case 'X':
+          this.twitterCaption = text;
+          this.twitterForm.patchValue({ postText: text });
+          break;
+      }
+    });
+  }
 }
