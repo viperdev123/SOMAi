@@ -12,6 +12,9 @@ import { TooltipModule } from 'primeng/tooltip';
 import { GalleriaModule } from 'primeng/galleria';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { CarouselModule } from 'primeng/carousel';
+import { Router } from '@angular/router';
+import { ReviewService } from '../service/review-service';
+import { LottieComponent } from 'ngx-lottie';
 
 interface ImageItem {
   id: string;
@@ -37,6 +40,7 @@ interface ImageItem {
     GalleriaModule,
     CarouselModule,
     ReactiveFormsModule,
+    LottieComponent
   ],
   providers: [MessageService],
   templateUrl: './review.html',
@@ -52,13 +56,15 @@ export class Review implements OnDestroy, OnInit {
   constructor(
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private reviewStateService: ReviewService
   ) { }
 
-  text: string = '☕ Start your morning right with our Premium Coffee Blend! ✨Crafted for the discerning professional who values quality and sustainability. Every sip tells astory of ethical sourcing and expert roasting.#CoffeeLovers #MorningRitual #PremiumCoffee';
-  text2: string = 'Your daily dose of perfection ☕✨Ethically sourced. Expertly roasted. Perfectly crafted for professionals who demand excellence.Tap to discover your new morning ritual 👆#PremiumCoffee #CoffeeCulture #MorningVibes #Lifestyle';
-  text3: string = 'POV: You just discovered the perfect coffee ☕✨This isn\'t just coffee - it\'s a whole vibe 🔥Ethically sourced beans that actually taste PREMIUM 💯Young professionals get it 🎯#CoffeeTok #MorningRoutine #PremiumCoffee #ProductivityHacks';
-  twitterText: string = "Just tried this new cafe! ☕️ The atmosphere is amazing and the coffee is top tier. 🚀 \n\nHighly recommended! #CoffeeLover #CafeVibes";
+  facebookCaption: string = '☕ Start your morning right with our Premium Coffee Blend! ✨Crafted for the discerning professional who values quality and sustainability. Every sip tells astory of ethical sourcing and expert roasting.#CoffeeLovers #MorningRitual #PremiumCoffee';
+  instagramCaption: string = 'Your daily dose of perfection ☕✨Ethically sourced. Expertly roasted. Perfectly crafted for professionals who demand excellence.Tap to discover your new morning ritual 👆#PremiumCoffee #CoffeeCulture #MorningVibes #Lifestyle';
+  tiktokCaption: string = 'POV: You just discovered the perfect coffee ☕✨This isn\'t just coffee - it\'s a whole vibe 🔥Ethically sourced beans that actually taste PREMIUM 💯Young professionals get it 🎯#CoffeeTok #MorningRoutine #PremiumCoffee #ProductivityHacks';
+  twitterCaption: string = "Just tried this new cafe! ☕️ The atmosphere is amazing and the coffee is top tier. 🚀 \n\nHighly recommended! #CoffeeLover #CafeVibes";
   uploadedImages: ImageItem[] = [];
   visible: boolean = false;
   displayGallery: boolean = false;
@@ -74,26 +80,33 @@ export class Review implements OnDestroy, OnInit {
   twitterForm!: FormGroup;
 
   currentPlatform!: 'facebook' | 'instagram' | 'tiktok' | 'twitter';
+  generateData: any = null;
 
   ngOnInit() {
     this.initForms();
+    this.generateData = this.reviewStateService.getData();
+    // if (!this.generateData) {
+    //   this.router.navigate(['/create']);
+    //   return;
+    // }
+    console.log('Review data:', this.generateData);
   }
 
   initForms() {
     this.facebookForm = new FormGroup({
-      postText: new FormControl(this.text, [Validators.required, Validators.maxLength(5000)])
+      postText: new FormControl(this.facebookCaption, [Validators.required, Validators.maxLength(5000)])
     });
 
     this.instagramForm = new FormGroup({
-      postText: new FormControl(this.text2, [Validators.required, Validators.maxLength(2200)])
+      postText: new FormControl(this.instagramCaption, [Validators.required, Validators.maxLength(2200)])
     });
 
     this.tiktokForm = new FormGroup({
-      postText: new FormControl(this.text3, [Validators.required, Validators.maxLength(2200)])
+      postText: new FormControl(this.tiktokCaption, [Validators.required, Validators.maxLength(2200)])
     });
 
     this.twitterForm = new FormGroup({
-      postText: new FormControl(this.twitterText, [Validators.required, Validators.maxLength(280)])
+      postText: new FormControl(this.twitterCaption, [Validators.required, Validators.maxLength(280)])
     });
   }
 
@@ -354,10 +367,10 @@ export class Review implements OnDestroy, OnInit {
     }
     const newCaption = form.value.postText;
     switch (this.currentPlatform) {
-      case 'facebook': this.text = newCaption; break;
-      case 'instagram': this.text2 = newCaption; break;
-      case 'tiktok': this.text3 = newCaption; break;
-      case 'twitter': this.twitterText = newCaption; break;
+      case 'facebook': this.facebookCaption = newCaption; break;
+      case 'instagram': this.instagramCaption = newCaption; break;
+      case 'tiktok': this.tiktokCaption = newCaption; break;
+      case 'twitter': this.twitterCaption = newCaption; break;
     }
     this.visibleEditCaption = false;
     this.messageService.add({
@@ -376,5 +389,16 @@ export class Review implements OnDestroy, OnInit {
     };
     return forms[this.currentPlatform] ?? this.facebookForm; // 👈 สำคัญ
   }
+
+  lottieOptions = {
+    path: 'assets/lottie/Empty_box.json',
+    loop: true,
+    autoplay: true
+  };
+
+  goToCreate() {
+    this.router.navigate(['/create']);
+  }
+
 
 }

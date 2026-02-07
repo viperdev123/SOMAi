@@ -1,8 +1,8 @@
 <div class="header">
     <span class="header-label">Content Review Board</span>
     <span class="sub-content-label">ตรวจสอบและอนุมัติคอนเทนต์ที่ AI สร้างขึ้นสำหรับแต่ละแพลตฟอร์ม</span>
-    <div class="content flex flex-row" style="overflow-x: scroll;">
-        <div class="mb-4 flex items-center justify-center">
+    <div class="content flex flex-row" style="overflow-x: scroll;" *ngIf="generateData;">
+        <div class="mb-4 flex items-center justify-center" #facebook>
             <div class="surface-card shadow-2 border-round-xl w-25rem flex flex-column"
                 style="max-width: 500px; overflow: hidden; min-height: 100%;">
                 <div class="flex justify-content-between align-items-center p-3">
@@ -35,7 +35,7 @@
 
                 <div class="px-3 pb-2">
                     <div>
-                        {{text}}
+                        {{facebookCaption}}
                     </div>
                     <button
                         class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700"
@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center">
+        <div class="mb-4 flex items-center justify-center" #instagram>
             <div class="surface-card shadow-2 border-round-xl w-25rem overflow-hidden flex flex-column">
                 <div class="flex justify-content-between align-items-center p-3">
                     <div class="flex align-items-center gap-2">
@@ -223,7 +223,7 @@
                     <div class="text-sm line-height-3 text-900">
                         <span class="font-bold mr-2">MyCafeBrand</span>
                         <div>
-                            {{text2}}
+                            {{instagramCaption}}
                         </div>
                     </div>
                     <button type="button" (click)="openEdit('instagram')"
@@ -242,7 +242,7 @@
 
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center">
+        <div class="mb-4 flex items-center justify-center" #tiktok>
             <div class="tiktok-card shadow-2 border-round-2xl overflow-hidden flex flex-column"
                 style="width: 340px; color: white;">
                 <div class="relative w-full flex-shrink-0" style="aspect-ratio: 9/20;">
@@ -327,7 +327,7 @@
                         class="absolute bottom-0 left-0 w-full p-3 z-2 bg-gradient-to-t from-black-alpha-60 to-transparent">
                         <div class="text-white font-bold mb-1 shadow-text">@MyBrand</div>
                         <div class="text-white text-sm line-clamp-2 shadow-text mb-2" style="max-width: 80%;">
-                            {{ text3 || 'Caption will appear here...' }}
+                            {{ tiktokCaption || 'Caption will appear here...' }}
                         </div>
                         <button type="button" (click)="openEdit('tiktok')"
                             class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700">
@@ -346,7 +346,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-4 flex items-center justify-center">
+        <div class="mb-4 flex items-center justify-center" #twitter>
             <div class="twitter-card shadow-2 border-round-xl flex flex-column surface-card" style="width: 450px;">
                 <div class="p-3 flex gap-3">
                     <div class="flex-shrink-0">
@@ -370,7 +370,7 @@
                         </div>
 
                         <div>
-                            {{twitterText}}
+                            {{twitterCaption}}
                         </div>
                         <button type="button" (click)="openEdit('twitter')"
                             class="flex align-items-center gap-2 text-primary font-medium bg-transparent border-none cursor-pointer mt-2 transition-duration-200 transition-colors hover:text-primary-700">
@@ -499,6 +499,21 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="content justify-content-center align-items-center" *ngIf="!generateData">
+        <div class="lottie-wrapper">
+            <ng-lottie [options]="lottieOptions"></ng-lottie>
+        </div>
+        <span>ระบบยังไม่มีข้อมูลจาก AI กรุณาสร้างคอนเทนต์ก่อนเพื่อเข้าสู่ขั้นตอน Review
+        </span>
+        <button pButton type="button" icon="pi pi-plus" label="สร้างคอนเทนต์ใหม่"
+            class="p-button-rounded" (click)="goToCreate()" severity="contrast" >
+        </button>
+        <ul class="empty-steps">
+            <li>เลือกแพลตฟอร์ม</li>
+            <li>กำหนด </li>
+            <li>Review & Publish</li>
+        </ul>
     </div>
 </div>
 <div class="card flex justify-content-center">

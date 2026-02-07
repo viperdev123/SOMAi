@@ -13,6 +13,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { LottieComponent } from 'ngx-lottie';
+import { ReviewService } from '../../review/service/review-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-page',
@@ -40,7 +42,9 @@ export class CreatePage implements OnInit {
   constructor(
     private messageService: MessageService,
     private createPageService: CreatePageService,
-    private cdr: ChangeDetectorRef
+    private reviewStateService: ReviewService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
   ) { }
 
   createForm!: FormGroup;
@@ -88,18 +92,22 @@ export class CreatePage implements OnInit {
     const platformIds = platforms.map((p: any) => p.name);
     const payload = {
       user_brief,
-      platformIds,
-      temp: 'https://60br94kh-5000.asse.devtunnels.ms/api/test_gen_content'
+      platformIds
+      // temp: 'https://60br94kh-5000.asse.devtunnels.ms/api/test_gen_content'
     };
 
     this.createPageService.generateContentFromN8n(payload).subscribe({
       next: (res) => {
+        this.reviewStateService.setData(res);
         this.completeProgress();
         console.log(res);
         setTimeout(() => {
           this.loading = false;
           this.cdr.markForCheck();
         }, 1000);
+        setTimeout(() => {
+          this.router.navigate(['/reviews']);
+        }, 1500);
       },
       error: (err) => {
         console.error(err);
