@@ -1,0 +1,10 @@
+.text-gradient {
+    /* ลบเว้นวรรคหลัง linear-gradient ออก */
+    background: linear-gradient(135deg, #ba1aff, #2e4ff5);
+
+    /* เพิ่ม standard property กันเหนียว */
+    background-clip: text;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

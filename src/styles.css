@@ -12,6 +12,8 @@ body {
   font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif;
   background-color: #F2F6FF;
   color: #2D3142;
+  padding: 0;
+  margin: 0;
 }
 
 
@@ -74,9 +76,9 @@ button.p-ripple.my-ai-button.p-button.p-button-contrast.p-button-raised.p-compon
   transition: transform 0.2s ease;
 }
 
-.p-button:hover .p-button-icon {
+/* .p-button:hover .p-button-icon {
   transform: rotate(15deg) scale(1.1);
-}
+} */
 
 /* 1. กำหนดความกว้างของแถบ Scrollbar */
 ::-webkit-scrollbar {
