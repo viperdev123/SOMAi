@@ -1,114 +1,78 @@
-<p-blockUI [blocked]="loading">
-    <!-- <div class="flex flex-column align-items-center justify-content-center h-full gap-3">
-        <p-progressSpinner
-            strokeWidth="4"
-            class="w-4rem h-4rem">
-        </p-progressSpinner>
-
-        <span class="text-white text-lg font-medium">
-            กำลังสร้างคอนเทนต์ด้วย AI...
-        </span>
-    </div> -->
-</p-blockUI>
-
-
-<!-- ===== Main Content ===== -->
-<div class="header">
-    <span class="header-label">AI Marketing</span>
-    <span class="sub-content-label">
-        สร้างคอนเทนต์การตลาดหลายแพลตฟอร์มด้วย AI
-    </span>
-
-    <div class="content">
-        <div class="flex flex-column mb-3">
-            <span class="content-label">สร้าง Campaign</span>
-            <span class="sub-content-label">
-                ให้ AI สร้างคอนเทนต์ที่น่าสนใจสำหรับแคมเปญการตลาดของคุณ
-            </span>
-        </div>
-
-        <form [formGroup]="createForm">
-            <div class="form">
-
-                <!-- ชื่อสินค้า + กลุ่มเป้าหมาย -->
-                <div class="flex col-12 p-0">
-                    <div class="form-content col-6 p-0 pr-1">
-                        <span>ชื่อสินค้า</span>
-                        <input type="text" maxlength="50" pInputText fluid formControlName="productName"
-                            placeholder="ตย. , ไก่ย่าง" />
-
-                        <div class="flex justify-content-end mt-1 text-sm text-500">
-                            {{ createForm.get('productName')?.value?.length || 0 }}/50
-                        </div>
-                    </div>
-
-                    <div class="form-content col-6 p-0 pl-1">
-                        <span>กลุ่มเป้าหมาย</span>
-                        <input type="text" maxlength="50" pInputText fluid formControlName="targetGroup"
-                            placeholder="ตย. , วัยรุ่น 20-35 ปี" />
-
-                        <div class="flex justify-content-end mt-1 text-sm text-500">
-                            {{ createForm.get('targetGroup')?.value?.length || 0 }}/50
-                        </div>
-                    </div>
-                </div>
-
-                <!-- แพลตฟอร์ม -->
-                <div class="form-content mb-3">
-                    <span class="block mb-2">แพลตฟอร์ม</span>
-
-                    <p-multiSelect [options]="platforms" formControlName="platforms" optionLabel="name" display="chip"
-                        defaultLabel="เลือกแพลตฟอร์มที่จะเจน" [style]="{ width: '100%' }" [filter]="false"
-                        [showClear]="true">
-
-                        <ng-template pTemplate="item" let-platform>
-                            <div class="flex align-items-center gap-2">
-                                <i [class]="platform.icon" [style.color]="platform.color" style="font-size: 1.2rem;">
-                                </i>
-                                <span>{{ platform.name }}</span>
-                            </div>
-                        </ng-template>
-
-                        <ng-template pTemplate="selectedItems">
-                            <div *ngIf="!(createForm.get('platforms')?.value?.length)" class="text-500">
-                                เลือกแพลตฟอร์มที่จะเจน
-                            </div>
-
-                            <div *ngIf="createForm.get('platforms')?.value?.length" class="flex gap-2 flex-wrap">
-
-                                <div *ngFor="let option of createForm.get('platforms')?.value"
-                                    class="surface-200 px-2 py-1 border-round flex align-items-center gap-2">
-                                    <i [class]="option.icon" [style.color]="option.color">
-                                    </i>
-                                    <span class="text-sm font-bold">
-                                        {{ option.name }}
-                                    </span>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-multiSelect>
-                </div>
-
-                <!-- Key Message -->
-                <div class="form-content">
-                    <span>Key Message</span>
-                    <textarea maxlength="150" rows="5" pTextarea [autoResize]="true" formControlName="keyMessage"
-                        placeholder="ตย. , ไก่ย่างหนังกรอบ เนื้อนุ่ม หอมเครื่องเทศ ย่างถ่านแท้"></textarea>
-
-                    <div class="flex justify-content-end mt-1 text-sm text-500">
-                        {{ createForm.get('keyMessage')?.value?.length || 0 }}/150
-                    </div>
-                </div>
-
-                <!-- Button -->
-                <div class="flex align-items-center justify-content-center mt-4">
-                    <p-button styleClass="my-ai-button" severity="contrast" [raised]="true" icon="pi pi-bolt"
-                        label="Generate with AI" [disabled]="loading" (click)="submitForm()">
-                    </p-button>
-                </div>
-
+<p-blockUI [blocked]="loading"></p-blockUI>
+<div class="min-h-screen surface-ground flex align-items-center justify-content-center p-4">
+    <div class="surface-card shadow-2 border-round-2xl w-full" style="max-width: 600px;">
+        <div class="text-center pt-5 pb-3 px-5">
+            <div class="flex align-items-center justify-content-center mx-auto border-circle text-white mb-3"
+                style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb, #9333ea);">
+                <i class="pi pi-sparkles text-xl"></i>
             </div>
-        </form>
+            <h1 class="text-3xl font-bold text-900 m-0 mb-2">เครื่องมือสร้างคอนเทนต์ Marketing ด้วย AI</h1>
+            <span class="text-600">สร้าง Content ที่โดนใจกลุ่มเป้าหมายของคุณได้ภายในไม่กี่วินาที</span>
+        </div>
+        <div class="p-5">
+            <form [formGroup]="createForm">
+                <div class="field mb-4">
+                    <label class="font-semibold text-900 block mb-2">ชื่อสินค้า</label>
+                    <input type="text" pInputText formControlName="productName" class="w-full p-3 border-round-lg"
+                        placeholder="ตย. เช่น ไก่ย่าง" />
+                    <small class="text-500 mt-1 block">คุณกำลังโปรโมตสินค้าหรือบริการอะไร?</small>
+                </div>
+                <div class="field mb-4">
+                    <label class="font-semibold text-900 block mb-2">กลุ่มเป้าหมาย</label>
+                    <input type="text" pInputText formControlName="targetGroup" class="w-full p-3 border-round-lg"
+                        placeholder="ตย. เช่น วัยรุ่นอายุ 25-35 ปี" />
+                    <small class="text-500 mt-1 block">ใครคือลูกค้าเป้าหมายของคุณ?</small>
+                </div>
+                <div class="field mb-4">
+                    <label class="font-semibold text-900 block mb-2">Platforms</label>
+                    <div class="grid formgrid">
+                        <div class="col-12 md:col-3 mb-2 md:mb-0" *ngFor="let platform of platforms">
+                            <div class="platform-card cursor-pointer border-round-lg flex flex-column align-items-center justify-content-center p-3 gap-2 relative transition-all transition-duration-200"
+                                [ngClass]="{'active-platform shadow-2': isPlatformSelected(platform), 'surface-border border-1': !isPlatformSelected(platform)}"
+                                (click)="togglePlatform(platform)">
+                                <div *ngIf="isPlatformSelected(platform)"
+                                    class="absolute bg-primary border-circle w-1rem h-1rem flex align-items-center justify-content-center"
+                                    style="top: -6px; right: -6px;">
+                                    <i class="pi pi-check text-xs text-white"></i>
+                                </div>
+
+                                <i [class]="platform.icon" style="font-size: 1.5rem;"
+                                    [style.color]="platform.color"></i>
+                                <span class="text-sm font-medium text-700">{{ platform.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <small class="text-500 mt-2 block"
+                        [ngClass]="{'text-red-500': createForm.get('platforms')?.invalid && createForm.get('platforms')?.touched}">
+                        เลือกอย่างน้อยหนึ่งแพลตฟอร์ม
+                    </small>
+                </div>
+
+                <div class="field mb-5">
+                    <label class="font-semibold text-900 block mb-2">Key Message</label>
+                    <textarea pTextarea formControlName="keyMessage" rows="5" class="w-full p-3 border-round-lg"
+                        placeholder="ตย. ไก่ย่างเคลือบน้ำผึ้ง หอมถ่าน ราคาถูก"></textarea>
+                    <div class="flex justify-content-between mt-1">
+                        <small class="text-500">สิ่งที่ทำให้สินค้าของคุณโดดเด่น</small>
+                        <small class="text-500">{{ 500 - (createForm.get('keyMessage')?.value?.length || 0) }}
+                            characters left</small>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button pButton label="Generate Content" icon="pi pi-sparkles" severity="contrast"
+                        class="flex-1 p-1 border-round-lg text-sm font-bold" (click)="submitForm()"
+                        [disabled]="loading">
+                    </button>
+
+                    <button pButton type="button" label="Reset" icon="pi pi-refresh"
+                        class="p-button-outlined p-button-secondary border-round-lg px-4" (click)="resetForm()">
+                    </button>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
 
@@ -117,7 +81,6 @@
 <p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [showHeader]="false"
     [style]="{width: '40vw', padding: '0' , height: '60vh', display: 'flex', 'align-items': 'center', 'justify-content': 'center'}">
     <div class="flex flex-column align-items-center justify-content-center h-full gap-4 w-full">
-        <!-- <p-progressSpinner [style]="{width: '100px', height: '100px'}"></p-progressSpinner> -->
         <ng-lottie [options]="lottieOptions" style="width: 200px"></ng-lottie>
         <span class="text-black text-lg font-medium">
             กำลังสร้างคอนเทนต์ด้วย AI...
@@ -125,8 +88,5 @@
         <p-progressBar [value]="progress" class="border-round-xl" [showValue]="false"
             [style]="{ width: '400px', height: '8px' }">
         </p-progressBar>
-
-
     </div>
-
 </p-dialog>
