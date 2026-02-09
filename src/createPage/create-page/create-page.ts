@@ -53,6 +53,8 @@ export class CreatePage implements OnInit {
   progress: number = 0;
   private progressInterval: any;
 
+  isAuthenticated: boolean = false;
+
   // Platform Options
   platforms = [
     { name: 'Facebook', code: 'FB', icon: 'pi pi-facebook', color: '#1877F2', bg: 'bg-blue-50' },

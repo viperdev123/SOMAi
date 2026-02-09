@@ -1,5 +1,5 @@
 <p-blockUI [blocked]="loading"></p-blockUI>
-<div class="min-h-screen surface-ground flex align-items-center justify-content-center p-4">
+<div class="min-h-screen surface-ground flex align-items-center justify-content-center p-4" *ngIf="isAuthenticated">
     <div class="surface-card shadow-2 border-round-2xl w-full" style="max-width: 600px;">
         <div class="text-center pt-5 pb-3 px-5">
             <div class="flex align-items-center justify-content-center mx-auto border-circle text-white mb-3"
@@ -90,3 +90,48 @@
         </p-progressBar>
     </div>
 </p-dialog>
+
+<div class="flex align-items-center justify-content-center min-h-screen overflow-hidden relative px-4 "
+    style="background-color: #f8f9fa;" *ngIf="!isAuthenticated">
+
+    <div class="absolute border-round-circle opacity-20"
+        style="width: 30rem; height: 30rem; top: -5rem; left: -5rem; background: #3b82f6; filter: blur(80px);">
+    </div>
+    <div class="absolute border-round-circle opacity-20"
+        style="width: 30rem; height: 30rem; bottom: -5rem; right: -5rem; background: #8b5cf6; filter: blur(80px);">
+    </div>
+
+    <div class="surface-card p-5 md:p-6 shadow-4 border-round-2xl text-center w-full relative z-1"
+        style="max-width: 450px;">
+
+        <div class="inline-flex align-items-center justify-content-center border-circle mb-5 shadow-2"
+            style="width: 5rem; height: 5rem; background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);">
+            <i class="pi pi-lock text-5xl text-blue-600"></i>
+        </div>
+
+        <h1 class="text-900 font-bold text-2xl md:text-3xl mb-3 mt-0">
+            กรุณาเข้าสู่ระบบ
+        </h1>
+
+        <p class="text-600 line-height-3 text-lg mb-6">
+            คุณยังไม่ได้เข้าสู่ระบบ หรือเซสชันของคุณหมดอายุแล้ว<br class="hidden md:inline">
+            โปรดลงชื่อเข้าใช้งานเพื่อดำเนินการต่อ
+        </p>
+
+        <button
+            class="w-full cursor-pointer text-white font-bold text-lg border-none border-round-xl py-3 px-4 shadow-2 transition-all transition-duration-200 hover:shadow-4 flex align-items-center justify-content-center gap-2"
+            style="background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); outline: none;" routerLink="/sign-in">
+            <i class="pi pi-sign-in text-xl"></i>
+            <span>ไปที่หน้าเข้าสู่ระบบ</span>
+        </button>
+
+        <div class="mt-4">
+            <a routerLink="/"
+                class="text-600 hover:text-900 transition-colors transition-duration-200 no-underline text-sm font-medium cursor-pointer">
+                กลับไปหน้าหลัก
+            </a>
+        </div>
+
+    </div>
+
+</div>
