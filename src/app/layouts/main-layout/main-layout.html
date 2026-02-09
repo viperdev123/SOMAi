@@ -1,0 +1,7 @@
+<div class="app-container">
+  <app-side-bar #mySidebar></app-side-bar>
+
+  <main class="main-content" [class.pushed]="mySidebar.isExpanded">
+    <router-outlet></router-outlet>
+  </main>
+</div>
