@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { SideBar } from '../../sideBar/side-bar/side-bar';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { LottieComponent } from 'ngx-lottie';
 @Component({
   selector: 'app-dash-board',
   imports: [
-    SideBar,
     ButtonModule,
     LottieComponent
   ],
