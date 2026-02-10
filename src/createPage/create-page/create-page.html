@@ -120,13 +120,13 @@
 
         <button
             class="w-full cursor-pointer text-white font-bold text-lg border-none border-round-xl py-3 px-4 shadow-2 transition-all transition-duration-200 hover:shadow-4 flex align-items-center justify-content-center gap-2"
-            style="background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); outline: none;" routerLink="/sign-in">
+            style="background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); outline: none;" (click)="goToSignIn()">
             <i class="pi pi-sign-in text-xl"></i>
             <span>ไปที่หน้าเข้าสู่ระบบ</span>
         </button>
 
         <div class="mt-4">
-            <a routerLink="/"
+            <a href="/"
                 class="text-600 hover:text-900 transition-colors transition-duration-200 no-underline text-sm font-medium cursor-pointer">
                 กลับไปหน้าหลัก
             </a>

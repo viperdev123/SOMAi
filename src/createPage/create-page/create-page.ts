@@ -186,4 +186,8 @@ export class CreatePage implements OnInit {
     this.cdr.markForCheck();
     setTimeout(() => { this.progress = 0; }, 300);
   }
+
+  goToSignIn(){
+    this.router.navigate(['/sign-in']);
+  }
 }
