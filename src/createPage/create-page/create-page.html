@@ -27,18 +27,40 @@
                     <label class="font-semibold text-900 block mb-2">Platforms</label>
                     <div class="grid formgrid">
                         <div class="col-12 md:col-3 mb-2 md:mb-0" *ngFor="let platform of platforms">
-                            <div class="platform-card cursor-pointer border-round-lg flex flex-column align-items-center justify-content-center p-3 gap-2 relative transition-all transition-duration-200"
-                                [ngClass]="{'active-platform shadow-2': isPlatformSelected(platform), 'surface-border border-1': !isPlatformSelected(platform)}"
-                                (click)="togglePlatform(platform)">
-                                <div *ngIf="isPlatformSelected(platform)"
-                                    class="absolute bg-primary border-circle w-1rem h-1rem flex align-items-center justify-content-center"
-                                    style="top: -6px; right: -6px;">
-                                    <i class="pi pi-check text-xs text-white"></i>
+
+                            <div class="platform-card border-round-lg flex flex-column align-items-center justify-content-center p-3 gap-2 relative transition-all transition-duration-200 cursor-pointer h-full"
+                                [ngClass]="{
+                'active-platform shadow-2 surface-0 border-blue-500 border-2': platform.connected && isPlatformSelected(platform),
+                'surface-card border-1 surface-border hover:surface-100': platform.connected && !isPlatformSelected(platform),
+                'surface-100 border-1 border-transparent opacity-80': !platform.connected
+            }" (click)="togglePlatform(platform)" style="min-height: 120px;">
+
+                                <div *ngIf="platform.connected && isPlatformSelected(platform)"
+                                    class="absolute bg-primary border-circle w-1rem h-1rem flex align-items-center justify-content-center fadein animation-duration-200"
+                                    style="top: 8px; right: 8px;">
+                                    <i class="pi pi-check text-xs text-white" style="font-size: 0.6rem;"></i>
                                 </div>
 
-                                <i [class]="platform.icon" style="font-size: 1.5rem;"
-                                    [style.color]="platform.color"></i>
-                                <span class="text-sm font-medium text-700">{{ platform.name }}</span>
+                                <div *ngIf="!platform.connected"
+                                    class="absolute bg-gray-400 border-circle w-1rem h-1rem flex align-items-center justify-content-center"
+                                    style="top: 8px; right: 8px;">
+                                    <i class="pi pi-exclamation-circle text-xs text-white"></i>
+                                </div>
+
+                                <i [class]="platform.icon" style="font-size: 1.8rem;"
+                                    [class.grayscale]="!platform.connected"
+                                    [style.color]="platform.connected ? platform.color : 'var(--gray-500)'"></i>
+
+                                <span class="text-sm font-medium"
+                                    [ngClass]="platform.connected ? 'text-700' : 'text-500'">
+                                    {{ platform.name }}
+                                </span>
+
+                                <div *ngIf="!platform.connected"
+                                    class="text-xs bg-gray-200 text-600 px-2 py-1 border-round mt-1 font-medium white-space-nowrap">
+                                    <i class="pi pi-link text-xs mr-1"></i>เชื่อมต่อ
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -131,6 +153,7 @@
                 กลับไปหน้าหลัก
             </a>
         </div>
+        <button (click)="this.isAuthenticated = true">test</button>
 
     </div>
 

@@ -45,7 +45,8 @@
           <div class="icon-wrapper flex align-items-center justify-content-center">
             <i class="pi pi-pencil text-xl"></i>
           </div>
-          <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">รีวิว & แก้ไขดราฟ</span>
+          <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">รีวิว &
+            แก้ไขดราฟ</span>
         </a>
       </li>
 
@@ -74,23 +75,26 @@
 
   <div class="sidebar-profile mt-auto p-2">
     <div
-      class="surface-overlay-10 border-round-xl transition-all transition-duration-200 cursor-pointer flex align-items-center overflow-hidden"
-      [class.justify-content-center]="!isExpanded" [class.justify-content-start]="isExpanded" [class.p-2]="!isExpanded"
-      [class.px-3]="isExpanded" [class.py-2]="isExpanded" [class.gap-3]="isExpanded" style="min-height: 56px;">
+      class="surface-overlay-10 border-round-xl transition-all transition-duration-200 cursor-pointer flex align-items-center overflow-hidden hover:surface-overlay-20"
+      (click)="openSocialDialog()" [class.justify-content-center]="!isExpanded"
+      [class.justify-content-start]="isExpanded" [class.p-2]="!isExpanded" [class.px-3]="isExpanded"
+      [class.py-2]="isExpanded" [class.gap-3]="isExpanded" style="min-height: 56px;">
+
       <img [src]="currentUser.avatar || 'https://i.pravatar.cc/100'"
         class="border-circle flex-shrink-0 object-cover shadow-2" [class.mx-auto]="!isExpanded"
         style="width: 40px; height: 40px;">
 
       <ng-container *ngIf="isExpanded">
         <div class="profile-info flex flex-column overflow-hidden fade-in-text">
-          <span class="text-white text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis">{{ currentUser.name }}</span>
+          <span class="text-white text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis">{{
+            currentUser.name }}</span>
           <span class="text-white-alpha-60 text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis"
             style="max-width: 120px;">
             {{ currentUser.email }}
           </span>
         </div>
 
-        <button
+        <button (click)="$event.stopPropagation()"
           class="ml-auto p-link text-white-alpha-70 hover:text-red-400 transition-colors transition-duration-200 flex align-items-center justify-content-center"
           style="border: none; background: transparent;" pTooltip="Logout" tooltipPosition="top">
           <i class="pi pi-sign-out text-lg" style="cursor: pointer;"></i>
@@ -101,3 +105,58 @@
   </div>
 
 </nav>
+
+<p-dialog [(visible)]="displaySocialDialog" [modal]="true" [draggable]="false"
+  [resizable]="false" [showHeader]="false" styleClass="p-0 border-round-2xl overflow-hidden">
+
+  <div class="relative bg-white pt-5 pb-4 px-4 flex flex-column align-items-center border-bottom-1 surface-border">
+
+    <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-plain absolute top-0 right-0 m-3"
+      (click)="displaySocialDialog = false"></button>
+
+    <div class="relative mb-3">
+      <img [src]="currentUser.avatar || 'https://i.pravatar.cc/150'"
+        class="w-6rem h-6rem border-circle shadow-4 border-2 border-white">
+      <div class="absolute bottom-0 right-0 w-1rem h-1rem border-circle bg-green-500 border-2 border-white"></div>
+    </div>
+
+    <div class="text-center">
+      <h2 class="text-900 font-bold text-xl m-0 mb-1">{{ currentUser.name }}</h2>
+      <p class="text-600 text-sm m-0">{{ currentUser.email }}</p>
+    </div>
+  </div>
+
+  <div class="surface-ground p-4" style="max-height: 400px; overflow-y: auto; min-width: 200px; width: 35vw;">
+    <p class="text-500 font-semibold text-xs uppercase mb-3 px-1">Connected Accounts</p>
+    <div class="flex flex-column gap-3">
+      <div *ngFor="let social of socialPlatforms"
+        class="surface-card p-3 border-round-xl shadow-1 flex align-items-center justify-content-between transition-all transition-duration-200 hover:shadow-2"
+        [ngClass]="{'border-left-3 border-blue-500': social.connected}">
+
+        <div class="flex align-items-center gap-3">
+          <div class="flex align-items-center justify-content-center border-round-lg w-3rem h-3rem"
+            [ngClass]="social.connected ? social.bgColor : 'surface-100'">
+            <i [class]="social.icon + ' text-xl'" [ngClass]="social.connected ? 'text-white' : 'text-500'"></i>
+          </div>
+
+          <div class="flex flex-column">
+            <span class="font-semibold text-900 text-sm">{{ social.name }}</span>
+            <span class="text-xs flex align-items-center gap-1"
+              [ngClass]="social.connected ? 'text-green-600' : 'text-500'">
+              <i class="pi" [ngClass]="social.connected ? 'pi-check-circle text-green-600' : 'pi-minus-circle'"></i>
+              {{ social.connected ? 'Active' : 'Not Connected' }}
+            </span>
+          </div>
+        </div>
+
+        <button pButton pRipple [icon]="social.connected ? 'pi pi-power-off' : 'pi pi-link'"
+          [label]="social.connected ? '' : 'Connect'" class="p-button-rounded p-button-sm h-2rem"
+          [class]="social.connected ? 'p-button-text p-button-secondary w-2rem px-0' : 'p-button-text p-button-primary px-3'"
+          (click)="toggleConnection(social)" [pTooltip]="social.connected ? 'ยกเลิกเชื่อมต่อ' : 'เชื่อมบัญชี'"
+          tooltipPosition="left" severity="secondary">
+        </button>
+      </div>
+    </div>
+  </div>
+
+</p-dialog>

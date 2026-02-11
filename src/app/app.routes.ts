@@ -7,6 +7,7 @@ import { AboutUs } from "../aboutUs/about-us/about-us";
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { SignInPage } from '../signIn/sign-in-page/sign-in-page';
+import { TermCondition } from '../term-condition/term-condition';
 
 export const routes: Routes = [
   {
@@ -25,7 +26,8 @@ export const routes: Routes = [
     path: '',
     component: AuthLayout,
     children: [
-      { path: 'sign-in', component: SignInPage }
+      { path: 'sign-in', component: SignInPage },
+      { path: 'term-condition', component: TermCondition },
     ]
   }
 ];

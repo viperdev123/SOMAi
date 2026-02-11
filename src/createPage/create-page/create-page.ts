@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'; // เพิ่ม OnDestroy
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
@@ -12,14 +12,16 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { LottieComponent } from 'ngx-lottie';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs'; // เพิ่ม Subscription
 
-// Service Imports (สมมติว่า Path ถูกต้องตามเดิม)
+// ตรวจสอบ path ให้ถูกต้องตามโปรเจกต์จริง
 import { CreatePageService } from '../service/create-page-service';
 import { ReviewService } from '../../review/service/review-service';
+import { SocialMediaService } from '../../social-media-service';
 
 @Component({
   selector: 'app-create-page',
-  standalone: true, // Angular ใหม่ๆ มักเป็น standalone
+  standalone: true,
   imports: [
     InputTextModule,
     TextareaModule,
@@ -38,7 +40,7 @@ import { ReviewService } from '../../review/service/review-service';
   templateUrl: './create-page.html',
   styleUrl: './create-page.css',
 })
-export class CreatePage implements OnInit {
+export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
 
   constructor(
     private messageService: MessageService,
@@ -46,22 +48,29 @@ export class CreatePage implements OnInit {
     private reviewStateService: ReviewService,
     private cdr: ChangeDetectorRef,
     private router: Router,
+    private socialService: SocialMediaService
   ) { }
 
   createForm!: FormGroup;
   loading: boolean = false;
   progress: number = 0;
   private progressInterval: any;
-
   isAuthenticated: boolean = false;
+  
+  // ตัวจัดการ Subscription
+  private subscription: Subscription = new Subscription();
 
-  // Platform Options
-  platforms = [
-    { name: 'Facebook', code: 'FB', icon: 'pi pi-facebook', color: '#1877F2', bg: 'bg-blue-50' },
-    { name: 'Instagram', code: 'IG', icon: 'pi pi-instagram', color: '#E4405F', bg: 'bg-pink-50' },
-    { name: 'Tiktok', code: 'TT', icon: 'pi pi-tiktok', color: '#000000', bg: 'bg-gray-50' },
-    { name: 'X', code: 'TW', icon: 'pi pi-twitter', color: '#000000', bg: 'bg-gray-50' }
+  // 1. Config: เก็บข้อมูลหน้าตา (Static) *ไม่มี connected*
+  // ** สำคัญ: id ต้องตรงกับ id ใน SocialMediaService **
+  private platformConfigs = [
+    { id: 'facebook', name: 'Facebook', code: 'FB', icon: 'pi pi-facebook', color: '#1877F2', bg: 'bg-blue-50' },
+    { id: 'instagram', name: 'Instagram', code: 'IG', icon: 'pi pi-instagram', color: '#E4405F', bg: 'bg-pink-50' },
+    { id: 'tiktok', name: 'Tiktok', code: 'TT', icon: 'pi pi-tiktok', color: '#000000', bg: 'bg-gray-50' },
+    { id: 'x', name: 'X', code: 'TW', icon: 'pi pi-twitter', color: '#000000', bg: 'bg-gray-50' }
   ];
+
+  // 2. Data: ตัวแปรที่จะใช้ Loop ใน HTML (รอรับค่าผสมจาก Service)
+  platforms: any[] = [];
 
   lottieOptions = {
     path: 'assets/lottie/Robot-Bot.json',
@@ -71,31 +80,57 @@ export class CreatePage implements OnInit {
 
   ngOnInit(): void {
     this.initCreateForm();
+
+    // 3. Logic การดึงข้อมูลแบบ Real-time
+    this.subscription.add(
+      this.socialService.platforms$.subscribe(serviceData => {
+        
+        // เอา Config หน้าตา + สถานะจาก Service มารวมกัน
+        this.platforms = this.platformConfigs.map(config => {
+          const serviceItem = serviceData.find(s => s.id === config.id);
+          return {
+            ...config,
+            connected: serviceItem ? serviceItem.connected : false
+          };
+        });
+
+        // สั่งอัปเดตหน้าจอ
+        this.cdr.markForCheck();
+      })
+    );
+  }
+
+  // 4. ล้าง Subscription เมื่อเปลี่ยนหน้า
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   initCreateForm() {
     this.createForm = new FormGroup({
       productName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       targetGroup: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-      platforms: new FormControl([], Validators.required), // Array เก็บ Object Platform
-      keyMessage: new FormControl('', [Validators.required, Validators.maxLength(500)]) // ปรับ max ตามรูปตัวอย่าง
+      platforms: new FormControl([], Validators.required),
+      keyMessage: new FormControl('', [Validators.required, Validators.maxLength(500)])
     });
   }
 
-  // --- Logic สำหรับเลือก Platform แบบ Card ---
   togglePlatform(platform: any) {
+    // ถ้ายังไม่ Connect -> เปิด Dialog (Logic เดิม)
+    if (!platform.connected) {
+      this.socialService.triggerOpenDialog();
+      return;
+    }
+
+    // ถ้า Connect แล้ว -> Select/Deselect
     const currentPlatforms = this.createForm.get('platforms')?.value || [];
     const index = currentPlatforms.findIndex((p: any) => p.code === platform.code);
 
     if (index > -1) {
-      // ถ้ามีอยู่แล้ว ให้เอาออก (Deselect)
       currentPlatforms.splice(index, 1);
     } else {
-      // ถ้ายังไม่มี ให้เพิ่มเข้าไป (Select)
       currentPlatforms.push(platform);
     }
 
-    // Update Form Control
     this.createForm.patchValue({ platforms: currentPlatforms });
     this.createForm.get('platforms')?.markAsTouched();
   }
@@ -109,7 +144,6 @@ export class CreatePage implements OnInit {
     this.createForm.reset();
     this.createForm.patchValue({ platforms: [] });
   }
-  // ------------------------------------------
 
   submitForm() {
     if (this.createForm.invalid) {
@@ -121,7 +155,8 @@ export class CreatePage implements OnInit {
     this.loading = true;
     this.startFakeProgress();
 
-    const { productName, targetGroup, keyMessage, platforms } = this.createForm.value;
+    const formValue = this.createForm.value;
+    const { productName, targetGroup, keyMessage, platforms } = formValue;
 
     const user_brief = `
       Product: ${productName}
@@ -129,7 +164,6 @@ export class CreatePage implements OnInit {
       Key Message: ${keyMessage}
     `;
 
-    // Map เอาเฉพาะ Name ส่งไปตาม Logic เดิม
     const platformIds = platforms.map((p: any) => p.name);
 
     const payload = {
@@ -187,7 +221,7 @@ export class CreatePage implements OnInit {
     setTimeout(() => { this.progress = 0; }, 300);
   }
 
-  goToSignIn(){
+  goToSignIn() {
     this.router.navigate(['/sign-in']);
   }
 }
