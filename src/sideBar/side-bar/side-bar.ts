@@ -59,7 +59,7 @@ export class SideBar implements OnInit, OnDestroy {
     ];
 
     this.currentUser = {
-      name: 'Apiwich LnwZaza007',
+      name: 'OhmlnwZazaHumyai007',
       email: 'apiwichpree@gmail.com',
       avatar: 'https://i.pravatar.cc/100'
     };
