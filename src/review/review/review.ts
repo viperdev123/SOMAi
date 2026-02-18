@@ -407,11 +407,11 @@ export class Review implements OnDestroy, OnInit {
 
   getDataFromAi() {
     this.generateData = this.reviewStateService.getData();
-    const contents = this.generateData?.result.generated_content || [];
+    const contents = this.generateData?.data?.contents || [];
 
     contents.forEach((item: any) => {
-      const platform = item?.json?.platform;
-      const text = item?.json?.content?.parts?.[0]?.text || '';
+      const platform = item?.platform;
+      const text = item?.content || '';
 
       if (!platform) return;
 
@@ -422,14 +422,17 @@ export class Review implements OnDestroy, OnInit {
           this.facebookCaption = text;
           this.facebookForm.patchValue({ postText: text });
           break;
+
         case 'Instagram':
           this.instagramCaption = text;
           this.instagramForm.patchValue({ postText: text });
           break;
+
         case 'Tiktok':
           this.tiktokCaption = text;
           this.tiktokForm.patchValue({ postText: text });
           break;
+
         case 'X':
           this.twitterCaption = text;
           this.twitterForm.patchValue({ postText: text });

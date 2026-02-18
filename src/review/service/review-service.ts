@@ -7,9 +7,9 @@ import { environment } from '../../environments/environment';
 })
 export class ReviewService {
 
-  private n8nUrl = environment.n8nUrl;
-  private token = environment.n8nToken;
+  private token =  localStorage.getItem('accessToken');
   private data: any = null;
+  private url = environment.googleLoginUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -33,6 +33,6 @@ export class ReviewService {
   }
 
   regenerateContent(payload: any) {
-    return this.http.post<any>(`${this.n8nUrl}/webhook/SOMAi/regen-content`, payload, { headers: this.getHeaders() });
+    return this.http.post<any>(`${this.url}/contents/refine`, payload, { headers: this.getHeaders() });
   }
 }

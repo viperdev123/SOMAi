@@ -62,36 +62,72 @@
     </ul>
   </div>
 
-  <div class="sidebar-profile mt-auto p-2">
+  <div class="sidebar-profile mt-auto p-3">
+
     <div
-      class="surface-overlay-10 border-round-xl transition-all transition-duration-200 cursor-pointer flex align-items-center overflow-hidden hover:surface-overlay-20"
-      (click)="openSocialDialog()" [class.justify-content-center]="!isExpanded"
-      [class.justify-content-start]="isExpanded" [class.p-2]="!isExpanded" [class.px-3]="isExpanded"
-      [class.py-2]="isExpanded" [class.gap-3]="isExpanded" style="min-height: 56px;">
-      <img [src]="currentUser.avatar || 'https://i.pravatar.cc/100'"
-        class="border-circle flex-shrink-0 object-cover shadow-2" [class.mx-auto]="!isExpanded"
-        style="width: 40px; height: 40px;">
-      <ng-container *ngIf="isExpanded">
-        <div class="profile-info flex flex-column overflow-hidden fade-in-text">
-          <span class="text-white text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis">{{
-            currentUser.name }}</span>
-          <span class="text-white-alpha-60 text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis"
-            style="max-width: 120px;">
-            {{ currentUser.email }}
-          </span>
+      class="relative w-full border-round-2xl transition-all transition-duration-300 overflow-hidden cursor-pointer group"
+      [ngClass]="{
+         'bg-white-alpha-5 hover:bg-white-alpha-10 border-1 border-white-alpha-10': isLoggedIn,
+         'p-0': !isExpanded,
+         'p-2': isExpanded
+       }" style="backdrop-filter: blur(8px); min-height: 60px;">
+
+      <ng-container *ngIf="isLoggedIn; else guestTemplate">
+        <div class="flex align-items-center"
+          [ngClass]="{'justify-content-center': !isExpanded, 'justify-content-between': isExpanded}">
+
+          <div class="relative flex-shrink-0 transition-all transition-duration-300"
+            [ngClass]="{'mx-auto': !isExpanded}">
+            <img [src]="currentUser?.picture || 'assets/default-avatar.png'"
+              class="border-circle object-cover shadow-4 vertical-align-middle"
+              [ngClass]="{'border-2 border-primary-400': isExpanded, 'border-none': !isExpanded}"
+              style="width: 40px; height: 40px;">
+            <span *ngIf="isExpanded"
+              class="absolute bottom-0 right-0 block border-circle bg-green-500 border-2 border-gray-900"
+              style="width: 10px; height: 10px;"></span>
+          </div>
+
+          <div *ngIf="isExpanded" class="flex flex-column ml-3 flex-1 overflow-hidden fade-in-left">
+            <span
+              class="text-white text-sm font-bold white-space-nowrap overflow-hidden text-overflow-ellipsis tracking-wide">
+              {{ currentUser.name }}
+            </span>
+            <span class="text-gray-400 text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis mt-1">
+              {{ currentUser.email }}
+            </span>
+          </div>
+
+          <button *ngIf="isExpanded" (click)="logout()" pTooltip="Sign Out" tooltipPosition="left"
+            class="p-button-rounded p-button-text p-button-secondary text-gray-400 hover:text-red-400 hover:bg-white-alpha-10 transition-colors transition-duration-200 w-2rem h-2rem flex align-items-center justify-content-center border-none ml-1">
+            <i class="pi pi-power-off text-sm"></i>
+          </button>
+
         </div>
-        <button (click)="$event.stopPropagation()"
-          class="ml-auto p-link text-white-alpha-70 hover:text-red-400 transition-colors transition-duration-200 flex align-items-center justify-content-center"
-          style="border: none; background: transparent;" pTooltip="Logout" tooltipPosition="top">
-          <i class="pi pi-sign-out text-lg" style="cursor: pointer;"></i>
-        </button>
       </ng-container>
+
+      <ng-template #guestTemplate>
+        <div class="flex align-items-center w-full h-full transition-all transition-duration-300"
+          [ngClass]="{'justify-content-center': !isExpanded, 'p-1': isExpanded}">
+
+          <button (click)="goToLogin()" pRipple
+            class="p-button p-component border-none transition-all transition-duration-300 shadow-2" [ngClass]="{
+                  'w-full border-round-xl px-3 py-2 bg-primary hover:bg-primary-600': isExpanded,
+                  'p-button-rounded p-button-text text-white hover:bg-white-alpha-10 w-3rem h-3rem': !isExpanded
+                }">
+            <i class="pi pi-sign-in text-lg" [ngClass]="{'mr-2': isExpanded}"></i>
+            <span *ngIf="isExpanded" class="font-semibold text-sm">Log In</span>
+          </button>
+
+        </div>
+      </ng-template>
+
     </div>
   </div>
+
 </nav>
 
-<p-dialog [(visible)]="displaySocialDialog" [modal]="true" [draggable]="false"
-  [resizable]="false" [showHeader]="false" styleClass="p-0 border-round-2xl overflow-hidden">
+<p-dialog [(visible)]="displaySocialDialog" [modal]="true" [draggable]="false" [resizable]="false" [showHeader]="false"
+  styleClass="p-0 border-round-2xl overflow-hidden">
 
   <div class="relative bg-white pt-5 pb-4 px-4 flex flex-column align-items-center border-bottom-1 surface-border">
 
@@ -99,14 +135,13 @@
       (click)="displaySocialDialog = false"></button>
 
     <div class="relative mb-3">
-      <img [src]="currentUser.avatar || 'https://i.pravatar.cc/150'"
-        class="w-6rem h-6rem border-circle shadow-4 border-2 border-white">
+      <img [src]="currentUser?.picture" class="w-6rem h-6rem border-circle shadow-4 border-2 border-white">
       <div class="absolute bottom-0 right-0 w-1rem h-1rem border-circle bg-green-500 border-2 border-white"></div>
     </div>
 
     <div class="text-center">
-      <h2 class="text-900 font-bold text-xl m-0 mb-1">{{ currentUser.name }}</h2>
-      <p class="text-600 text-sm m-0">{{ currentUser.email }}</p>
+      <h2 class="text-900 font-bold text-xl m-0 mb-1">{{ currentUser?.name }}</h2>
+      <p class="text-600 text-sm m-0">{{ currentUser?.email }}</p>
     </div>
   </div>
 

@@ -9,7 +9,8 @@ import { environment } from '../../environments/environment';
 export class CreatePageService {
 
   private n8nUrl = environment.n8nUrl;
-  private token = environment.n8nToken;
+  private token = localStorage.getItem('accessToken');
+  private url = environment.googleLoginUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -21,12 +22,10 @@ export class CreatePageService {
   }
 
   generateContentFromN8n(payload: any) {
-    return this.http.post<any>(`${this.n8nUrl}/webhook/SOMAi/create-content`, payload, { headers: this.getHeaders() });
+    return this.http.post<any>(`${this.url}/contents`, payload, { headers: this.getHeaders() });
   }
 
-  pollingData(payload: any) {
-    return this.http.post<any>(`${this.n8nUrl}/webhook/SOMAi/check-status`, payload, { headers: this.getHeaders() });
-  }
+  
 
 }
 

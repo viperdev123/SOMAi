@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
 
-  private googleUrl = environment.googleLoginUrl
+  private url = environment.googleLoginUrl
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +21,7 @@ export class AuthService {
       const top = window.screenY + (window.outerHeight - height) / 2;
 
       const popup = window.open(
-        `${this.googleUrl}/login/google`,
+        `${this.url}/login/google`,
         'GoogleLogin',
         `width=${width},height=${height},left=${left},top=${top}`
       );
@@ -32,11 +32,9 @@ export class AuthService {
       }
 
       const handler = (event: MessageEvent) => {
-        console.log('🔥 message received:', event);
-        const backendOrigin = new URL(this.googleUrl).origin;
+        const backendOrigin = new URL(this.url).origin;
 
         if (event.origin !== backendOrigin) {
-          console.log('❌ origin ไม่ตรง:', event.origin);
           return;
         }
         const { accessToken, refreshToken, user, success } = event.data;
@@ -46,7 +44,6 @@ export class AuthService {
           window.removeEventListener('message', handler);
           return;
         }
-        console.log('🎉 Login success');
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('user', JSON.stringify(user));
@@ -57,6 +54,36 @@ export class AuthService {
       };
       window.addEventListener('message', handler);
     });
+  }
+
+  getCurrentUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+
+  getAccessToken() {
+    return localStorage.getItem('accessToken');
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem('refreshToken');
+  }
+
+  logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    window.location.href = '/sign-in';
+  }
+
+  refreshToken() {
+    const refreshToken = this.getRefreshToken();
+    return this.http.post<any>(`${this.url}/auth/refresh`, { refreshToken });
+  }
+
+
+  setAccessToken(token: string) {
+    localStorage.setItem('accessToken', token);
   }
 
 

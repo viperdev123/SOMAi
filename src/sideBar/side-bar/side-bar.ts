@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SocialMediaService } from '../../social-media-service';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
 
 interface SocialPlatformUI {
   id: string;
@@ -31,7 +32,11 @@ interface SocialPlatformUI {
 })
 export class SideBar implements OnInit, OnDestroy {
 
-  constructor(private socialService: SocialMediaService) { }
+  constructor(
+    private socialService: SocialMediaService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   items: MenuItem[] | undefined;
   isExpanded = true;
@@ -39,7 +44,6 @@ export class SideBar implements OnInit, OnDestroy {
   displaySocialDialog: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  // 1. Config สำหรับความสวยงาม (Fixed Data)
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600' },
     { id: 'instagram', name: 'Instagram Business', icon: 'pi pi-instagram', bgColor: 'bg-pink-600' },
@@ -47,7 +51,6 @@ export class SideBar implements OnInit, OnDestroy {
     { id: 'x', name: 'X (Twitter)', icon: 'pi pi-twitter', bgColor: 'bg-gray-900' }
   ];
 
-  // 2. ตัวแปรที่จะเอาไปวน Loop ใน HTML (Dynamic Data)
   socialPlatforms: SocialPlatformUI[] = [];
 
   ngOnInit() {
@@ -58,15 +61,8 @@ export class SideBar implements OnInit, OnDestroy {
       { label: 'Settings', icon: 'pi pi-cog', routerLink: '/settings' }
     ];
 
-    this.currentUser = {
-      name: 'OhmlnwZazaHumyai007',
-      email: 'apiwichpree@gmail.com',
-      avatar: 'https://i.pravatar.cc/100'
-    };
-
-    // --- ส่วนการเชื่อมต่อ Service ---
-
-    // A. รอฟังคำสั่งเปิด Dialog (จากหน้า Create หรือที่อื่น)
+    this.currentUser = this.authService.getCurrentUser();
+    console.log(this.currentUser?.picture);
     this.subscription.add(
       this.socialService.openDialog$.subscribe(() => {
         this.displaySocialDialog = true;
@@ -101,4 +97,19 @@ export class SideBar implements OnInit, OnDestroy {
   toggleConnection(platform: SocialPlatformUI) {
     this.socialService.toggleConnection(platform.id);
   }
+
+  logout() {
+    this.authService.logout();
+    console.log(localStorage.getItem('user'))
+  }
+
+  goToLogin() {
+    this.router.navigate(['/sign-in']);
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.currentUser;
+  }
+
+
 }

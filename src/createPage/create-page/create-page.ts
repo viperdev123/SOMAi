@@ -18,6 +18,7 @@ import { Subscription, switchMap, timer } from 'rxjs'; // เพิ่ม Subscr
 import { CreatePageService } from '../service/create-page-service';
 import { ReviewService } from '../../review/service/review-service';
 import { SocialMediaService } from '../../social-media-service';
+import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
 
 @Component({
   selector: 'app-create-page',
@@ -40,7 +41,7 @@ import { SocialMediaService } from '../../social-media-service';
   templateUrl: './create-page.html',
   styleUrl: './create-page.css',
 })
-export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
+export class CreatePage implements OnInit, OnDestroy {
 
   constructor(
     private messageService: MessageService,
@@ -48,7 +49,8 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
     private reviewStateService: ReviewService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private socialService: SocialMediaService
+    private socialService: SocialMediaService,
+    private authService: AuthService
   ) { }
 
   createForm!: FormGroup;
@@ -59,6 +61,8 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
   job_id!: any;
   private subscription: Subscription = new Subscription();
   private pollingSub!: Subscription;
+  accessToken!: any;
+  refreshToken!: any;
 
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook', code: 'FB', icon: 'pi pi-facebook', color: '#1877F2', bg: 'bg-blue-50' },
@@ -77,6 +81,7 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
 
   ngOnInit(): void {
     this.initCreateForm();
+    this.getToken();
 
     this.subscription.add(
       this.socialService.platforms$.subscribe(serviceData => {
@@ -156,46 +161,32 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
     const platformIds = platforms.map((p: any) => p.name);
 
     const payload = {
-      user_brief: user_brief,
+      brief: user_brief,
       platforms: platformIds
     };
 
 
     this.createPageService.generateContentFromN8n(payload).subscribe({
       next: (res) => {
-        console.log("AI ตอบกลับ", res);
-        if (res.status === 'failed') {
+        if (res.success) {
+          this.reviewStateService.setData(res);
+          this.completeProgress();
+          setTimeout(() => {
+            this.loading = false;
+            this.cdr.markForCheck();
+          },1000);
+          setTimeout(() => {
+            this.router.navigate(['/reviews']);
+          },1500);
+        } else {
           this.completeProgress();
           setTimeout(() => {
             this.messageService.add({
-              severity: 'warn', summary: 'กรุณาใส่ข้อมูลให้ถูกต้อง', detail: res.message, sticky: true
+              severity: 'warn', summary: 'กรุณากรอกข้อมูลให้ถูกต้อง', detail: res.message, sticky: true
             });
             this.loading = false;
             this.cdr.markForCheck();
           }, 1000);
-        } else {
-          this.job_id = res.job_id;
-          const payload = {
-            job_id: this.job_id
-          }
-          this.pollingSub = timer(0, 5000).pipe(switchMap(() => this.createPageService.pollingData(payload))).subscribe({
-            next: (res) => {
-              this.reviewStateService.setData(res);
-              if (res.status === 'done') {
-                this.pollingSub.unsubscribe();
-                this.completeProgress();
-                setTimeout(() => {
-                  this.loading = false;
-                  this.cdr.markForCheck();
-                  this.router.navigate(['/reviews']);
-                }, 1000);
-              }
-            },
-            error: (err) => {
-              this.loading = false;
-              console.log(err);
-            }
-          });
         }
       },
       error: (err) => {
@@ -237,5 +228,10 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
 
   goToSignIn() {
     this.router.navigate(['/sign-in']);
+  }
+
+  getToken() {
+    this.accessToken = this.authService.getAccessToken();
+    this.refreshToken = this.authService.getRefreshToken();
   }
 }

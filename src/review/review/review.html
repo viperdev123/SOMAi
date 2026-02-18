@@ -1,4 +1,4 @@
-<div class="header" *ngIf="generateData?.result.generated_content?.length;">
+<div class="header" *ngIf="generateData?.data.contents?.length;">
     <span class="header-label">Content Review Board</span>
     <span class="sub-content-label">ตรวจสอบและอนุมัติคอนเทนต์ที่ AI สร้างขึ้นสำหรับแต่ละแพลตฟอร์ม</span>
     <div class="content flex flex-row" style="overflow-x: scroll;">
@@ -506,7 +506,7 @@
     </div>
 </div>
 <div class="flex align-items-center justify-content-center min-h-screen surface-ground p-4 relative overflow-hidden"
-    *ngIf="!generateData?.result.generated_content?.length">
+    *ngIf="!generateData?.data.contents?.length">
 
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div class="absolute border-circle bg-purple-100 opacity-60"
