@@ -74,19 +74,22 @@ export class Review implements OnDestroy, OnInit {
   tiktokImages: ImageItem[] = [];
   twitterImages: ImageItem[] = [];
   visibleEditCaption = false;
-
   facebookForm!: FormGroup;
   instagramForm!: FormGroup;
   tiktokForm!: FormGroup;
   twitterForm!: FormGroup;
-
   currentPlatform!: 'facebook' | 'instagram' | 'tiktok' | 'twitter';
   generateData: any = null;
+  currentContent!: any;
+  visibleRegenDialog: boolean = false;
+  regenComment: string = '';
+  selectedPlatform!: string;
+  loadingRegen = false;
+
 
   ngOnInit() {
     this.initForms();
     this.getDataFromAi();
-    console.log('Generate Data:', this.generateData);
   }
 
   ngOnChanges() {
@@ -333,7 +336,6 @@ export class Review implements OnDestroy, OnInit {
   openGallery(index: number) {
     this.activeIndex = index;
     this.displayGallery = true;
-    console.log('Opening gallery at index:', index);
   }
 
   onActiveIndexChange(index: number) {
@@ -405,7 +407,7 @@ export class Review implements OnDestroy, OnInit {
 
   getDataFromAi() {
     this.generateData = this.reviewStateService.getData();
-    const contents = this.generateData?.generated_content || [];
+    const contents = this.generateData?.result.generated_content || [];
 
     contents.forEach((item: any) => {
       const platform = item?.json?.platform;
@@ -435,4 +437,63 @@ export class Review implements OnDestroy, OnInit {
       }
     });
   }
+
+  showRegenContentDialog(platform: string) {
+    this.visibleRegenDialog = true;
+    this.selectedPlatform = platform;
+    this.regenComment = '';
+    switch (platform) {
+      case "Facebook":
+        this.currentContent = this.facebookCaption;
+        break;
+      case "Instagram":
+        this.currentContent = this.instagramCaption;
+        break;
+      case "Tiktok":
+        this.currentContent = this.tiktokCaption;
+        break;
+      case "Twitter":
+        this.currentContent = this.twitterCaption;
+        break;
+    }
+  }
+
+  regenerateContent() {
+    this.loadingRegen = true;
+    const payload = {
+      platforms: this.selectedPlatform,
+      old_content: this.currentContent,
+      comment: this.regenComment
+    };
+    this.reviewStateService.regenerateContent(payload).subscribe({
+      next: (res) => {
+        if (!res.result) return;
+        const text = res.result;
+        switch (this.selectedPlatform) {
+          case "Facebook":
+            this.facebookCaption = text;
+            break;
+          case "Instagram":
+            this.instagramCaption = text;
+            break;
+          case "Tiktok":
+            this.tiktokCaption = text;
+            break;
+          case "X":
+            this.twitterCaption = text;
+            break;
+        }
+        this.loadingRegen = false;
+        this.visibleRegenDialog = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingRegen = false;
+      }
+    });
+
+  }
+
+
+
 }

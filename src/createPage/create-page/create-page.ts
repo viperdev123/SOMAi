@@ -12,7 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { LottieComponent } from 'ngx-lottie';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs'; // เพิ่ม Subscription
+import { Subscription, switchMap, timer } from 'rxjs'; // เพิ่ม Subscription
 
 // ตรวจสอบ path ให้ถูกต้องตามโปรเจกต์จริง
 import { CreatePageService } from '../service/create-page-service';
@@ -56,12 +56,10 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
   progress: number = 0;
   private progressInterval: any;
   isAuthenticated: boolean = false;
-  
-  // ตัวจัดการ Subscription
+  job_id!: any;
   private subscription: Subscription = new Subscription();
+  private pollingSub!: Subscription;
 
-  // 1. Config: เก็บข้อมูลหน้าตา (Static) *ไม่มี connected*
-  // ** สำคัญ: id ต้องตรงกับ id ใน SocialMediaService **
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook', code: 'FB', icon: 'pi pi-facebook', color: '#1877F2', bg: 'bg-blue-50' },
     { id: 'instagram', name: 'Instagram', code: 'IG', icon: 'pi pi-instagram', color: '#E4405F', bg: 'bg-pink-50' },
@@ -69,7 +67,6 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
     { id: 'x', name: 'X', code: 'TW', icon: 'pi pi-twitter', color: '#000000', bg: 'bg-gray-50' }
   ];
 
-  // 2. Data: ตัวแปรที่จะใช้ Loop ใน HTML (รอรับค่าผสมจาก Service)
   platforms: any[] = [];
 
   lottieOptions = {
@@ -81,11 +78,8 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
   ngOnInit(): void {
     this.initCreateForm();
 
-    // 3. Logic การดึงข้อมูลแบบ Real-time
     this.subscription.add(
       this.socialService.platforms$.subscribe(serviceData => {
-        
-        // เอา Config หน้าตา + สถานะจาก Service มารวมกัน
         this.platforms = this.platformConfigs.map(config => {
           const serviceItem = serviceData.find(s => s.id === config.id);
           return {
@@ -93,14 +87,11 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
             connected: serviceItem ? serviceItem.connected : false
           };
         });
-
-        // สั่งอัปเดตหน้าจอ
         this.cdr.markForCheck();
       })
     );
   }
 
-  // 4. ล้าง Subscription เมื่อเปลี่ยนหน้า
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
@@ -115,13 +106,11 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
   }
 
   togglePlatform(platform: any) {
-    // ถ้ายังไม่ Connect -> เปิด Dialog (Logic เดิม)
     if (!platform.connected) {
       this.socialService.triggerOpenDialog();
       return;
     }
 
-    // ถ้า Connect แล้ว -> Select/Deselect
     const currentPlatforms = this.createForm.get('platforms')?.value || [];
     const index = currentPlatforms.findIndex((p: any) => p.code === platform.code);
 
@@ -167,22 +156,47 @@ export class CreatePage implements OnInit, OnDestroy { // Implement OnDestroy
     const platformIds = platforms.map((p: any) => p.name);
 
     const payload = {
-      user_brief,
-      platformIds
+      user_brief: user_brief,
+      platforms: platformIds
     };
+
 
     this.createPageService.generateContentFromN8n(payload).subscribe({
       next: (res) => {
-        this.reviewStateService.setData(res);
-        this.completeProgress();
-        console.log(res);
-        setTimeout(() => {
-          this.loading = false;
-          this.cdr.markForCheck();
-        }, 1000);
-        setTimeout(() => {
-          this.router.navigate(['/reviews']);
-        }, 1500);
+        console.log("AI ตอบกลับ", res);
+        if (res.status === 'failed') {
+          this.completeProgress();
+          setTimeout(() => {
+            this.messageService.add({
+              severity: 'warn', summary: 'กรุณาใส่ข้อมูลให้ถูกต้อง', detail: res.message, sticky: true
+            });
+            this.loading = false;
+            this.cdr.markForCheck();
+          }, 1000);
+        } else {
+          this.job_id = res.job_id;
+          const payload = {
+            job_id: this.job_id
+          }
+          this.pollingSub = timer(0, 5000).pipe(switchMap(() => this.createPageService.pollingData(payload))).subscribe({
+            next: (res) => {
+              this.reviewStateService.setData(res);
+              if (res.status === 'done') {
+                this.pollingSub.unsubscribe();
+                this.completeProgress();
+                setTimeout(() => {
+                  this.loading = false;
+                  this.cdr.markForCheck();
+                  this.router.navigate(['/reviews']);
+                }, 1000);
+              }
+            },
+            error: (err) => {
+              this.loading = false;
+              console.log(err);
+            }
+          });
+        }
       },
       error: (err) => {
         console.error(err);

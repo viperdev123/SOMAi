@@ -1,24 +1,18 @@
 <nav class="sidebar shadow-6" [class.expanded]="isExpanded">
-
   <div class="sidebar-header flex align-items-center py-4" [class.justify-content-between]="isExpanded"
     [class.justify-content-center]="!isExpanded" [class.px-3]="isExpanded">
-
     <div class="logo-wrapper flex align-items-center gap-2 overflow-hidden" *ngIf="isExpanded">
       <img src="android-chrome-512x512.png" alt="Logo" class="w-2rem h-auto border-round-sm">
       <span class="font-bold text-xl text-white white-space-nowrap fade-in-text">SOMAi</span>
     </div>
-
     <button
       class="toggle-btn p-link flex align-items-center justify-content-center border-circle transition-all transition-duration-200"
       (click)="toggleSidebar()" style="width: 2.5rem; height: 2.5rem;">
       <i [class]="isExpanded ? 'pi pi-angle-left text-lg' : 'pi pi-bars text-xl'"></i>
     </button>
-
   </div>
-
   <div class="nav-container flex-grow-1 overflow-y-auto overflow-x-hidden py-2 custom-scrollbar">
     <ul class="list-none p-0 m-0 flex flex-column gap-2 px-2">
-
       <li class="nav-item" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
         <a routerLink="/home"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
@@ -28,7 +22,6 @@
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">หน้าหลัก</span>
         </a>
       </li>
-
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/create"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
@@ -38,7 +31,6 @@
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">สร้าง Campaign</span>
         </a>
       </li>
-
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/reviews"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
@@ -49,7 +41,6 @@
             แก้ไขดราฟ</span>
         </a>
       </li>
-
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/history"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
@@ -59,7 +50,6 @@
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">ประวัติ</span>
         </a>
       </li>
-
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/about-us"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
@@ -69,7 +59,6 @@
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">เกี่ยวกับเรา</span>
         </a>
       </li>
-
     </ul>
   </div>
 
@@ -79,11 +68,9 @@
       (click)="openSocialDialog()" [class.justify-content-center]="!isExpanded"
       [class.justify-content-start]="isExpanded" [class.p-2]="!isExpanded" [class.px-3]="isExpanded"
       [class.py-2]="isExpanded" [class.gap-3]="isExpanded" style="min-height: 56px;">
-
       <img [src]="currentUser.avatar || 'https://i.pravatar.cc/100'"
         class="border-circle flex-shrink-0 object-cover shadow-2" [class.mx-auto]="!isExpanded"
         style="width: 40px; height: 40px;">
-
       <ng-container *ngIf="isExpanded">
         <div class="profile-info flex flex-column overflow-hidden fade-in-text">
           <span class="text-white text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis">{{
@@ -93,17 +80,14 @@
             {{ currentUser.email }}
           </span>
         </div>
-
         <button (click)="$event.stopPropagation()"
           class="ml-auto p-link text-white-alpha-70 hover:text-red-400 transition-colors transition-duration-200 flex align-items-center justify-content-center"
           style="border: none; background: transparent;" pTooltip="Logout" tooltipPosition="top">
           <i class="pi pi-sign-out text-lg" style="cursor: pointer;"></i>
         </button>
       </ng-container>
-
     </div>
   </div>
-
 </nav>
 
 <p-dialog [(visible)]="displaySocialDialog" [modal]="true" [draggable]="false"

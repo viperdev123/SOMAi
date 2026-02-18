@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
 
 @Component({
   selector: 'app-sign-in-page',
@@ -22,7 +23,11 @@ export class SignInPage implements OnInit {
   currentDate: string = '';
   isAccepted: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private authService: AuthService
+
+  ) {
     this.currentDate = new Date().toLocaleDateString('th-TH', {
       year: 'numeric',
       month: 'long',
@@ -30,30 +35,42 @@ export class SignInPage implements OnInit {
     });
   }
 
-  showDialog() {
+  async showDialog() {
     const isAccepted = localStorage.getItem('hasAcceptedTerms');
+
     if (isAccepted === 'true') {
-      this.router.navigate(['/home']);
+      await this.handleLogin();
     } else {
       this.visible = true;
     }
   }
 
+
   goToTerm() {
     this.router.navigate(['/term-condition']);
   }
 
-  onAccept() {
+  async onAccept() {
     if (this.isAccepted) {
-      console.log('User accepted terms.');
       localStorage.setItem('hasAcceptedTerms', 'true');
-      this.router.navigate(['/home']);
+      this.visible = false;
+      await this.handleLogin();
     }
   }
+
 
   onDecline() {
     console.log('User declined terms.');
     this.visible = false;
+  }
+
+  private async handleLogin() {
+    try {
+      await this.authService.loginGooglePopup();
+      this.router.navigate(['/home']);
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
   }
 
 }

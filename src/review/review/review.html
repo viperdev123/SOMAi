@@ -1,4 +1,4 @@
-<div class="header" *ngIf="generateData?.generated_content?.length;">
+<div class="header" *ngIf="generateData?.result.generated_content?.length;">
     <span class="header-label">Content Review Board</span>
     <span class="sub-content-label">ตรวจสอบและอนุมัติคอนเทนต์ที่ AI สร้างขึ้นสำหรับแต่ละแพลตฟอร์ม</span>
     <div class="content flex flex-row" style="overflow-x: scroll;">
@@ -138,7 +138,8 @@
                     </button>
                 </div>
                 <div class="p-3 flex gap-2 border-top-1 surface-border container-footer-btn mt-auto">
-                    <button class="reGenerate-btn w-6 bg-white"><i class="pi pi-sync"></i> Regenerate</button>
+                    <button class="reGenerate-btn w-6 bg-white" (click)="showRegenContentDialog('Facebook')"><i
+                            class="pi pi-sync"></i> Regenerate</button>
                     <button (click)="showDialog()" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
                         Approve</button>
                 </div>
@@ -236,7 +237,8 @@
                 </div>
 
                 <div class="p-3 flex gap-2 border-top-1 surface-border mt-auto">
-                    <button class="reGenerate-btn w-6 bg-white"><i class="pi pi-sync"></i> Regenerate</button>
+                    <button class="reGenerate-btn w-6 bg-white" (click)="showRegenContentDialog('Instagram')"><i
+                            class="pi pi-sync"></i> Regenerate</button>
                     <button class="ai-generate-btn w-6"><i class="pi pi-check"></i> Approve</button>
                 </div>
 
@@ -337,7 +339,8 @@
                     </div>
                 </div>
                 <div class="flex gap-2 p-3 mt-auto border-top-1 surface-border">
-                    <button class="reGenerate-btn text-xs w-6 justify-content-center">
+                    <button class="reGenerate-btn text-xs w-6 justify-content-center"
+                        (click)="showRegenContentDialog('Tiktok')">
                         <i class="pi pi-sync mr-1"></i> Regenerate
                     </button>
                     <button class="ai-generate-btn text-xs w-6 justify-content-center">
@@ -492,7 +495,8 @@
                 </div>
 
                 <div class="border-top-1 surface-border p-3 flex gap-2 mt-auto">
-                    <button class="reGenerate-btn text-xs w-6 justify-content-center"><i class="pi pi-sync mr-1"></i>
+                    <button class="reGenerate-btn text-xs w-6 justify-content-center"
+                        (click)="showRegenContentDialog('X')"><i class="pi pi-sync mr-1"></i>
                         Regenerate</button>
                     <button class="ai-generate-btn text-xs w-6 justify-content-center"><i class="pi pi-check mr-1"></i>
                         Approve</button>
@@ -502,7 +506,7 @@
     </div>
 </div>
 <div class="flex align-items-center justify-content-center min-h-screen surface-ground p-4 relative overflow-hidden"
-    *ngIf="!generateData?.generated_content?.length">
+    *ngIf="!generateData?.result.generated_content?.length">
 
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div class="absolute border-circle bg-purple-100 opacity-60"
@@ -629,4 +633,51 @@
             </div>
         </div>
     </form>
+</p-dialog>
+
+
+<p-dialog header="Regenerate Content" [(visible)]="visibleRegenDialog" [modal]="true" [style]="{ width: '50vw' }"
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }" [draggable]="false" [resizable]="false">
+    <div class="flex flex-column gap-3">
+        <div>
+            <label class="block text-900 font-bold mb-2">
+                <i class="pi pi-history mr-2 text-primary"></i>
+                Original Content
+            </label>
+            <div class="p-3 surface-100 border-round text-700 line-height-3 shadow-1"
+                style="max-height:150px; overflow-y:auto; font-style:italic;">
+                {{ currentContent }}
+            </div>
+        </div>
+        <div class="flex justify-content-center">
+            <i class="pi pi-arrow-down text-gray-400" style="font-size: 1.5rem"></i>
+        </div>
+        <div>
+            <label class="block text-900 font-bold mb-2">
+                <i class="pi pi-pencil mr-2 text-primary"></i>
+                What should be improved?
+            </label>
+            <span class="p-float-label mt-3">
+                <textarea id="regen-comment" rows="4" pInputTextarea [(ngModel)]="regenComment" class="w-full"
+                    [autoResize]="true">
+                </textarea>
+                <label for="regen-comment">
+                    e.g., ขอเน้นความน่ากินกว่านี้, ทำให้สั้นลง
+                </label>
+            </span>
+            <small class="text-500">
+                Provide specific instructions for the AI.
+            </small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="visibleRegenDialog = false">
+        </button>
+        <button pButton [label]="loadingRegen ? 'Regenerating...' : 'Regenerate Now'"
+            [icon]="loadingRegen ? 'pi pi-spin pi-spinner' : 'pi pi-sparkles'" class="p-button-primary"
+            [disabled]="!regenComment || loadingRegen" (click)="regenerateContent()">
+        </button>
+
+
+    </ng-template>
 </p-dialog>
