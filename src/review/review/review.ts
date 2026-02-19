@@ -85,7 +85,7 @@ export class Review implements OnDestroy, OnInit {
   regenComment: string = '';
   selectedPlatform!: string;
   loadingRegen = false;
-
+  loadingSubmit = false;
 
   ngOnInit() {
     this.initForms();
@@ -120,9 +120,40 @@ export class Review implements OnDestroy, OnInit {
     this.visible = true;
   }
 
-  showSuccess() {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'โพสต์สำเร็จแล้ว' });
-    this.visible = false;
+  onSubmit(platform: string) {
+    try {
+      this.loadingSubmit = true;
+      const formData = new FormData();
+      formData.append('content', this.facebookCaption);
+      formData.append('platform', platform);
+      if (this.uploadedImages && this.uploadedImages.length > 0) {
+        this.uploadedImages.forEach((img: any) => {
+          if (img.file) {
+            formData.append('image', img.file);
+          }
+        });
+      }
+      this.reviewStateService.submit(formData).subscribe({
+        next: (res) => {
+          this.loadingSubmit = false;
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'โพสต์สำเร็จ' });
+          this.visible = false;
+          this.reviewStateService.clear();
+          setTimeout(() => {
+            this.router.navigate(['/history']);
+          }, 1500);
+        },
+        error: (err) => {
+          this.loadingSubmit = false;
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'โพสต์ไม่สำเร็จ' });
+          this.visible = false;
+        }
+      });
+
+    } catch (error) {
+      this.loadingSubmit = false;
+      console.error("Error:", error);
+    }
   }
 
   showError() {
@@ -144,18 +175,31 @@ export class Review implements OnDestroy, OnInit {
       event.target.value = '';
       return;
     }
-    const newImages = fileArray.map(file => {
-      const blobUrl = URL.createObjectURL(file);
-      const safeUrl = this.sanitizer.bypassSecurityTrustUrl(blobUrl);
-      return {
-        id: crypto.randomUUID(),
-        itemImageSrc: safeUrl,
-        thumbnailImageSrc: safeUrl,
-        _blobUrl: blobUrl,
-        file: file
-      };
-    });
-    this.uploadedImages = [...this.uploadedImages, ...newImages];
+    let finalFileToProcess: File | null = null;
+    if (this.uploadedImages.length >= 1 || fileArray.length > 1) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'แจ้งเตือน',
+        detail: 'เลือกได้แค่ 1 รูป ระบบจะเลือกให้เฉพาะรูปแรก'
+      });
+      if (this.uploadedImages.length >= 1) {
+        event.target.value = '';
+        return;
+      }
+      finalFileToProcess = fileArray[0];
+    } else {
+      finalFileToProcess = fileArray[0];
+    }
+    const blobUrl = URL.createObjectURL(finalFileToProcess);
+    const safeUrl = this.sanitizer.bypassSecurityTrustUrl(blobUrl);
+    const newImage = {
+      id: crypto.randomUUID(),
+      itemImageSrc: safeUrl,
+      thumbnailImageSrc: safeUrl,
+      _blobUrl: blobUrl,
+      file: finalFileToProcess
+    };
+    this.uploadedImages = [newImage];
     this.cdr.detectChanges();
     event.target.value = '';
   }
@@ -464,14 +508,13 @@ export class Review implements OnDestroy, OnInit {
   regenerateContent() {
     this.loadingRegen = true;
     const payload = {
-      platforms: this.selectedPlatform,
-      old_content: this.currentContent,
-      comment: this.regenComment
+      platform: this.selectedPlatform,
+      content: this.currentContent,
+      feedback: this.regenComment
     };
     this.reviewStateService.regenerateContent(payload).subscribe({
       next: (res) => {
-        if (!res.result) return;
-        const text = res.result;
+        const text = res.data.content;
         switch (this.selectedPlatform) {
           case "Facebook":
             this.facebookCaption = text;
@@ -492,6 +535,8 @@ export class Review implements OnDestroy, OnInit {
       },
       error: () => {
         this.loadingRegen = false;
+        this.visibleRegenDialog = false;
+        this.cdr.detectChanges();
       }
     });
 

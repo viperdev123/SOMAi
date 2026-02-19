@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { SocialMediaService } from '../../social-media-service';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
+import { environment } from '../../environments/environment';
 
 interface SocialPlatformUI {
   id: string;
@@ -15,6 +16,7 @@ interface SocialPlatformUI {
   icon: string;
   bgColor: string;
   connected: boolean;
+  enabled: boolean;
 }
 
 @Component({
@@ -45,10 +47,10 @@ export class SideBar implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   private platformConfigs = [
-    { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600' },
-    { id: 'instagram', name: 'Instagram Business', icon: 'pi pi-instagram', bgColor: 'bg-pink-600' },
-    { id: 'tiktok', name: 'TikTok', icon: 'pi pi-tiktok', bgColor: 'bg-gray-900' },
-    { id: 'x', name: 'X (Twitter)', icon: 'pi pi-twitter', bgColor: 'bg-gray-900' }
+    { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600', enabled: true },
+    { id: 'instagram', name: 'Instagram Business', icon: 'pi pi-instagram', bgColor: 'bg-pink-600', enabled: false },
+    { id: 'tiktok', name: 'TikTok', icon: 'pi pi-tiktok', bgColor: 'bg-gray-900', enabled: false },
+    { id: 'x', name: 'X (Twitter)', icon: 'pi pi-twitter', bgColor: 'bg-gray-900', enabled: false }
   ];
 
   socialPlatforms: SocialPlatformUI[] = [];
@@ -95,8 +97,14 @@ export class SideBar implements OnInit, OnDestroy {
   }
 
   toggleConnection(platform: SocialPlatformUI) {
+
+    if (platform.id === 'facebook' && !platform.connected) {
+      this.openFacebookPopup();
+      return;
+    }
     this.socialService.toggleConnection(platform.id);
   }
+
 
   logout() {
     this.authService.logout();
@@ -110,6 +118,38 @@ export class SideBar implements OnInit, OnDestroy {
   get isLoggedIn(): boolean {
     return !!this.currentUser;
   }
+
+  openFacebookPopup() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (this.authService.isTokenExpired(accessToken)) {
+      this.authService.refreshToken().subscribe({
+        next: (res) => {
+          if (!res.success || !res.data?.accessToken) {
+            this.authService.logout();
+            return;
+          }
+          this.authService.setAccessToken(res.data.accessToken);
+          this.startFacebookConnect();
+        },
+        error: () => {
+          this.authService.logout();
+        }
+      });
+    } else {
+      this.startFacebookConnect();
+    }
+  }
+
+
+  private async startFacebookConnect() {
+    try {
+      await this.authService.connectFacebookPopup();
+      this.socialService.setConnected('facebook', true);
+    } catch (err) {
+      console.error('Facebook connect failed:', err);
+    }
+  }
+
 
 
 }

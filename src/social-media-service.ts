@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface SocialPlatform {
-  id: string;      // key หลักสำหรับเช็ค (เช่น 'facebook')
+  id: string;
   name: string;
   connected: boolean;
+  enabled: boolean;
 }
 
 @Injectable({
@@ -12,19 +14,20 @@ export interface SocialPlatform {
 })
 export class SocialMediaService {
 
+  private isBrowser: boolean;
+
   private openDialogSource = new Subject<void>();
   openDialog$ = this.openDialogSource.asObservable();
 
-  private platformsSource = new BehaviorSubject<SocialPlatform[]>([
-    { id: 'facebook', name: 'Facebook', connected: true },
-    { id: 'instagram', name: 'Instagram', connected: false },
-    { id: 'tiktok', name: 'Tiktok', connected: false },
-    { id: 'x', name: 'X (Twitter)', connected: true }
-  ]);
-  
+  private platformsSource = new BehaviorSubject<SocialPlatform[]>([]);
   platforms$ = this.platformsSource.asObservable();
 
-  constructor() { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    // โหลดข้อมูลหลังจากเช็คว่าเป็น browser แล้ว
+    this.platformsSource.next(this.loadPlatforms());
+  }
 
   triggerOpenDialog() {
     this.openDialogSource.next();
@@ -32,14 +35,45 @@ export class SocialMediaService {
 
   toggleConnection(platformId: string) {
     const currentPlatforms = this.platformsSource.getValue();
-    const updatedPlatforms = currentPlatforms.map(p => {
-      if (p.id === platformId) {
-        return { ...p, connected: !p.connected };
-      }
-      return p;
-    });
+    const updatedPlatforms = currentPlatforms.map(p =>
+      p.id === platformId ? { ...p, connected: !p.connected } : p
+    );
 
     this.platformsSource.next(updatedPlatforms);
-    console.log(`Updated ${platformId} status`);
+    this.saveToStorage(updatedPlatforms);
+  }
+
+  setConnected(platformId: string, value: boolean) {
+    const currentPlatforms = this.platformsSource.getValue();
+    const updatedPlatforms = currentPlatforms.map(p =>
+      p.id === platformId ? { ...p, connected: value } : p
+    );
+
+    this.platformsSource.next(updatedPlatforms);
+    this.saveToStorage(updatedPlatforms);
+  }
+
+  private loadPlatforms(): SocialPlatform[] {
+    if (!this.isBrowser) {
+      return this.getDefaultPlatforms();
+    }
+
+    const saved = localStorage.getItem('socialPlatforms');
+    return saved ? JSON.parse(saved) : this.getDefaultPlatforms();
+  }
+
+  private saveToStorage(data: SocialPlatform[]) {
+    if (this.isBrowser) {
+      localStorage.setItem('socialPlatforms', JSON.stringify(data));
+    }
+  }
+
+  private getDefaultPlatforms(): SocialPlatform[] {
+    return [
+      { id: 'facebook', name: 'Facebook', connected: false, enabled: true },
+      { id: 'instagram', name: 'Instagram', connected: false, enabled: false },
+      { id: 'tiktok', name: 'Tiktok', connected: false, enabled: false },
+      { id: 'x', name: 'X (Twitter)', connected: false, enabled: false }
+    ];
   }
 }

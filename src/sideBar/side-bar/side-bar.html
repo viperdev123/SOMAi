@@ -74,7 +74,8 @@
 
       <ng-container *ngIf="isLoggedIn; else guestTemplate">
         <div class="flex align-items-center"
-          [ngClass]="{'justify-content-center': !isExpanded, 'justify-content-between': isExpanded}">
+          [ngClass]="{'justify-content-center': !isExpanded, 'justify-content-between': isExpanded}"
+          (click)="displaySocialDialog = true">
 
           <div class="relative flex-shrink-0 transition-all transition-duration-300"
             [ngClass]="{'mx-auto': !isExpanded}">
@@ -106,16 +107,16 @@
       </ng-container>
 
       <ng-template #guestTemplate>
-        <div class="flex align-items-center w-full h-full transition-all transition-duration-300"
-          [ngClass]="{'justify-content-center': !isExpanded, 'p-1': isExpanded}">
-
-          <button (click)="goToLogin()" pRipple
-            class="p-button p-component border-none transition-all transition-duration-300 shadow-2" [ngClass]="{
-                  'w-full border-round-xl px-3 py-2 bg-primary hover:bg-primary-600': isExpanded,
-                  'p-button-rounded p-button-text text-white hover:bg-white-alpha-10 w-3rem h-3rem': !isExpanded
-                }">
-            <i class="pi pi-sign-in text-lg" [ngClass]="{'mr-2': isExpanded}"></i>
-            <span *ngIf="isExpanded" class="font-semibold text-sm">Log In</span>
+        <div class="flex align-items-center w-full transition-all transition-duration-300"
+          [ngClass]="{'justify-content-center': !isExpanded, 'px-2': isExpanded}">
+          <button pButton pRipple (click)="goToLogin()"
+            class="p-0 border-none transition-all transition-duration-200 flex align-items-center justify-content-center overflow-hidden"
+            [ngClass]="{
+              'w-full py-2 bg-gray-900 text-white hover:bg-gray-800 border-round-lg shadow-2 gap-2': isExpanded,
+              'w-3rem h-3rem p-button-rounded p-button-text text-white hover:bg-white-alpha-10': !isExpanded
+            }">
+            <i class="pi pi-sign-in text-xl"></i>
+            <span *ngIf="isExpanded" class="font-semibold white-space-nowrap fade-in">Log In</span>
           </button>
 
         </div>
@@ -163,7 +164,7 @@
             <span class="text-xs flex align-items-center gap-1"
               [ngClass]="social.connected ? 'text-green-600' : 'text-500'">
               <i class="pi" [ngClass]="social.connected ? 'pi-check-circle text-green-600' : 'pi-minus-circle'"></i>
-              {{ social.connected ? 'Active' : 'Not Connected' }}
+              {{ social.connected ? 'Active' : 'ยังไม่ได้เชื่อมต่อ' }}
             </span>
           </div>
         </div>
@@ -172,7 +173,7 @@
           [label]="social.connected ? '' : 'Connect'" class="p-button-rounded p-button-sm h-2rem"
           [class]="social.connected ? 'p-button-text p-button-secondary w-2rem px-0' : 'p-button-text p-button-primary px-3'"
           (click)="toggleConnection(social)" [pTooltip]="social.connected ? 'ยกเลิกเชื่อมต่อ' : 'เชื่อมบัญชี'"
-          tooltipPosition="left" severity="secondary">
+          [disabled]="!social.enabled" tooltipPosition="left" severity="secondary">
         </button>
       </div>
     </div>
