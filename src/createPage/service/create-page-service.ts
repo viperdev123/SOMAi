@@ -8,7 +8,6 @@ import { environment } from '../../environments/environment';
 })
 export class CreatePageService {
 
-  private n8nUrl = environment.n8nUrl;
   private token = localStorage.getItem('accessToken');
   private url = environment.googleLoginUrl;
 
