@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
@@ -8,8 +8,9 @@ import { AuthService } from '../../app/layouts/auth-layout/service/auth-service'
   selector: 'app-sign-in-page',
   imports: [
     DialogModule,
-    ButtonModule
-  ],
+    ButtonModule,
+    RouterLink
+],
   templateUrl: './sign-in-page.html',
   styleUrl: './sign-in-page.css',
 })

@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LottieComponent } from 'ngx-lottie';
 @Component({
   selector: 'app-dash-board',
   imports: [
     ButtonModule,
-    LottieComponent
-  ],
+    LottieComponent,
+    RouterLink
+],
   templateUrl: './dash-board.html',
   styleUrl: './dash-board.css',
 })
