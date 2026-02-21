@@ -64,7 +64,6 @@ export class SideBar implements OnInit, OnDestroy {
     ];
 
     this.currentUser = this.authService.getCurrentUser();
-    console.log(this.currentUser?.picture);
     this.subscription.add(
       this.socialService.openDialog$.subscribe(() => {
         this.displaySocialDialog = true;
@@ -108,7 +107,6 @@ export class SideBar implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    console.log(localStorage.getItem('user'))
   }
 
   goToLogin() {

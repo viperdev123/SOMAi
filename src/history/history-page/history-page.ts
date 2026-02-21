@@ -42,7 +42,6 @@ export class HistoryPage implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log('History data loaded:', response);
           this.historyData = response;
           this.cdr.markForCheck();
         },

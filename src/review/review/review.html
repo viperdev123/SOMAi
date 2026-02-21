@@ -637,7 +637,7 @@
 
 
 <p-dialog header="Regenerate Content" [(visible)]="visibleRegenDialog" [modal]="true" [style]="{ width: '50vw' }"
-    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }" [draggable]="false" [resizable]="false">
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }" [draggable]="false" [resizable]="false" [closable]="false">
     <div class="flex flex-column gap-3">
         <div>
             <label class="block text-900 font-bold mb-2">
@@ -665,13 +665,10 @@
                     e.g., ขอเน้นความน่ากินกว่านี้, ทำให้สั้นลง
                 </label>
             </span>
-            <small class="text-500">
-                Provide specific instructions for the AI.
-            </small>
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="visibleRegenDialog = false">
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="visibleRegenDialog = false" [disabled]="loadingRegen">
         </button>
         <button pButton [label]="loadingRegen ? 'Regenerating...' : 'Regenerate Now'"
             [icon]="loadingRegen ? 'pi pi-spin pi-spinner' : 'pi pi-sparkles'" class="p-button-primary"

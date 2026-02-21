@@ -529,9 +529,11 @@ export class Review implements OnDestroy, OnInit {
             this.twitterCaption = text;
             break;
         }
+        this.messageService.add({ severity: 'success', summary: 'สำเร็จ', detail: `Regenerate caption ${this.selectedPlatform} สำเร็จแล้ว` });
         this.loadingRegen = false;
         this.visibleRegenDialog = false;
         this.cdr.detectChanges();
+
       },
       error: () => {
         this.loadingRegen = false;

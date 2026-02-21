@@ -26,14 +26,12 @@ export class TermCondition {
 
   onAccept() {
     if (this.isAccepted) {
-      console.log('User accepted terms.');
       localStorage.setItem('hasAcceptedTerms', 'true');
       this.router.navigate(['/home']);
     }
   }
 
   onDecline() {
-    console.log('User declined terms.');
     this.router.navigate(['/sign-in']);
   }
 }

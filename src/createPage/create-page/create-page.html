@@ -101,17 +101,24 @@
 <p-toast></p-toast>
 
 <p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [showHeader]="false"
-    [style]="{width: '40vw', padding: '0' , height: '60vh', display: 'flex', 'align-items': 'center', 'justify-content': 'center'}">
-    <div class="flex flex-column align-items-center justify-content-center h-full gap-4 w-full">
-        <ng-lottie [options]="lottieOptions" style="width: 200px"></ng-lottie>
-        <span class="text-black text-lg font-medium">
+    [style]="{ width: '40vw', maxWidth: '500px' }" [contentStyle]="{ padding: '2rem' }" [breakpoints]="{
+        '1024px': '60vw',
+        '768px': '80vw',
+        '560px': '95vw'
+    }">
+
+    <div class="flex flex-column align-items-center justify-content-center gap-4 w-full text-center">
+        <ng-lottie [options]="lottieOptions" class="w-12rem md:w-14rem lg:w-16rem">
+        </ng-lottie>
+        <span class="text-black text-base md:text-lg font-medium">
             กำลังสร้างคอนเทนต์ด้วย AI...
         </span>
-        <p-progressBar [value]="progress" class="border-round-xl" [showValue]="false"
-            [style]="{ width: '400px', height: '8px' }">
+        <p-progressBar [value]="progress" class="border-round-xl w-full" [showValue]="false"
+            [style]="{ height: '8px' }">
         </p-progressBar>
     </div>
 </p-dialog>
+
 
 <div class="flex align-items-center justify-content-center min-h-screen overflow-hidden relative px-4 "
     style="background-color: #f8f9fa;" *ngIf="!accessToken">

@@ -60,7 +60,6 @@ export class SignInPage implements OnInit {
 
 
   onDecline() {
-    console.log('User declined terms.');
     this.visible = false;
   }
 
