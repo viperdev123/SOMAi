@@ -174,10 +174,10 @@ export class CreatePage implements OnInit, OnDestroy {
           setTimeout(() => {
             this.loading = false;
             this.cdr.markForCheck();
-          },1000);
+          }, 1000);
           setTimeout(() => {
             this.router.navigate(['/reviews']);
-          },1500);
+          }, 1500);
         } else {
           this.completeProgress();
           setTimeout(() => {
@@ -233,5 +233,9 @@ export class CreatePage implements OnInit, OnDestroy {
   getToken() {
     this.accessToken = this.authService.getAccessToken();
     this.refreshToken = this.authService.getRefreshToken();
+  }
+
+  goToHome() {
+    this.router.navigate(['/home']);
   }
 }
