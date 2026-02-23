@@ -16,17 +16,17 @@ export class HistoryService {
   constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
-
-    let token = null;
-
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('accessToken');
-    }
-
-    return new HttpHeaders({
-      ...(token && { Authorization: `Bearer ${token}` }),
-      Accept: '*/*'
+    let headers = new HttpHeaders({
+      Accept: '*/*',
+      'ngrok-skip-browser-warning': 'true'
     });
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return headers;
   }
 
   getData(): Observable<any[]> {

@@ -28,7 +28,7 @@ export class HistoryPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadHistory();
+    // this.loadHistory();
   }
 
   loadHistory() {

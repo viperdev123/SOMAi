@@ -195,7 +195,7 @@ export class CreatePage implements OnInit, OnDestroy {
         this.completeProgress();
         this.cdr.markForCheck();
         this.messageService.add({
-          severity: 'error', summary: 'Error', detail: 'Something went wrong.'
+          severity: 'warn', summary: 'กรุณากรอกข้อมูลให้ถูกต้อง', detail: err.error.message, sticky: true
         });
       }
     });
