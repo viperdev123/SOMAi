@@ -33,6 +33,7 @@ export class HistoryPage implements OnInit {
 
   loadHistory() {
     this.isLoading = true;
+
     this.historyService.getData()
       .pipe(
         finalize(() => {
@@ -41,8 +42,24 @@ export class HistoryPage implements OnInit {
         })
       )
       .subscribe({
-        next: (response) => {
-          this.historyData = response;
+        next: (response: any) => {
+          console.log('API Response:', response);
+          const rows = response?.data?.rows ?? [];
+
+          this.historyData = rows.map((item: any) => {
+            const dateObj = new Date(item.timestamp);
+
+            return {
+              Date: dateObj,
+              Time: dateObj.toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit'
+              }),
+              Platform: item.platform,
+              Url: item.link
+            };
+          });
+
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -52,7 +69,7 @@ export class HistoryPage implements OnInit {
   }
 
   refreshHistory() {
-    this.historyService.clearCache(); 
+    this.historyService.clearCache();
     this.loadHistory();
   }
 }
