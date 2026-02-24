@@ -149,7 +149,7 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    this.router.navigate(['/sign-in']);
+    this.router.navigate(['/home'], { replaceUrl: true });
   }
 
   refreshToken() {

@@ -98,7 +98,7 @@
             </span>
           </div>
 
-          <button *ngIf="isExpanded" (click)="logout()" pTooltip="Sign Out" tooltipPosition="left"
+          <button *ngIf="isExpanded" (click)="openLogoutConfirm($event)" pTooltip="Sign Out" tooltipPosition="left"
             class="p-button-rounded p-button-text p-button-secondary text-gray-400 hover:text-red-400 hover:bg-white-alpha-10 transition-colors transition-duration-200 w-2rem h-2rem flex align-items-center justify-content-center border-none ml-1">
             <i class="pi pi-power-off text-sm"></i>
           </button>
@@ -180,3 +180,31 @@
   </div>
 
 </p-dialog>
+
+<div class="card flex justify-content-center">
+  <p-dialog [(visible)]="visibleLogoutConfirm" [modal]="true" [style]="{ width: '35rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="false" [draggable]="false">
+
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-sign-out text-red-500 text-2xl"></i>
+        <span class="font-bold text-lg text-900">Confirm Logout</span>
+      </div>
+    </ng-template>
+
+    <div class="flex align-items-center gap-3 mb-3">
+      <p class="m-0 text-700 line-height-3">
+        Are you sure you want to log out? <br>
+        คุณแน่ใจหรือไม่ที่จะออกจากระบบบัญชีนี้?
+      </p>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (click)="visibleLogoutConfirm = false" />
+        <p-button label="Log Out" (click)="logout()" severity="danger" [outlined]="true" icon="pi pi-sign-out" styleClass="w-10rem" />
+      </div>
+    </ng-template>
+
+  </p-dialog>
+</div>

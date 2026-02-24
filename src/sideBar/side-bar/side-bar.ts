@@ -9,6 +9,7 @@ import { SocialMediaService } from '../../social-media-service';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
 import { environment } from '../../environments/environment';
+import { HistoryService } from '../../history/service/history-service';
 
 interface SocialPlatformUI {
   id: string;
@@ -37,7 +38,8 @@ export class SideBar implements OnInit, OnDestroy {
   constructor(
     private socialService: SocialMediaService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private HistoryService: HistoryService
   ) { }
 
   items: MenuItem[] | undefined;
@@ -45,6 +47,7 @@ export class SideBar implements OnInit, OnDestroy {
   currentUser: any = null;
   displaySocialDialog: boolean = false;
   private subscription: Subscription = new Subscription();
+  visibleLogoutConfirm: boolean = false;
 
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600', enabled: true },
@@ -107,6 +110,8 @@ export class SideBar implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
+    this.HistoryService.clearCache();
+    this.visibleLogoutConfirm = false;
   }
 
   goToLogin() {
@@ -148,6 +153,9 @@ export class SideBar implements OnInit, OnDestroy {
     }
   }
 
-
+  openLogoutConfirm(event: MouseEvent) {
+    event.stopPropagation();
+    this.visibleLogoutConfirm = true;
+  }
 
 }

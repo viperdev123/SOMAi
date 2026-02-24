@@ -4,6 +4,9 @@ import { HistoryService } from '../service/history-service';
 import { Button } from 'primeng/button';
 import { finalize } from 'rxjs/operators'
 import { TableModule } from 'primeng/table';
+import { Router } from '@angular/router';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-history-page',
@@ -18,17 +21,22 @@ import { TableModule } from 'primeng/table';
 })
 export class HistoryPage implements OnInit {
 
+  accessToken = '';
   historyData: any[] = [];
   isLoading = false;
 
   constructor(
     private historyService: HistoryService,
     private cdr: ChangeDetectorRef,
-
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngOnInit() {
-    // this.loadHistory();
+    if (isPlatformBrowser(this.platformId)) {
+      this.accessToken = localStorage.getItem('accessToken') || '';
+    }
+    this.loadHistory();
   }
 
   loadHistory() {
@@ -43,7 +51,6 @@ export class HistoryPage implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          console.log('API Response:', response);
           const rows = response?.data?.rows ?? [];
 
           this.historyData = rows.map((item: any) => {
@@ -71,5 +78,13 @@ export class HistoryPage implements OnInit {
   refreshHistory() {
     this.historyService.clearCache();
     this.loadHistory();
+  }
+
+  goToHome() {
+    this.router.navigate(['/home']);
+  }
+
+  goToSignIn() {
+    this.router.navigate(['/sign-in']);
   }
 }
