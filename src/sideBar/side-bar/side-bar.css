@@ -2,11 +2,14 @@
 :host {
   --sidebar-width-collapsed: 80px;
   --sidebar-width-expanded: 260px;
-  --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); /* Deep Blue/Purple Gradient */
+  --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+  /* Deep Blue/Purple Gradient */
   --item-hover-bg: rgba(255, 255, 255, 0.1);
-  --item-active-bg: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); /* Brand Gradient */
+  --item-active-bg: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  /* Brand Gradient */
   --text-color: #94a3b8;
   --text-active: #ffffff;
+  display: block;
 }
 
 /* --- Main Container --- */
@@ -22,7 +25,8 @@
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  border-right: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border */
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  /* Subtle border */
 }
 
 .sidebar.expanded {
@@ -39,6 +43,7 @@
   color: #fff;
   border: none;
 }
+
 .toggle-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
@@ -55,7 +60,8 @@
 
 /* Icon Wrapper: จัดกึ่งกลางไอคอนเสมอ ไม่ว่าจะหุบหรือกาง */
 .icon-wrapper {
-  width: 40px; /* Fixed width matching collapsed sidebar center */
+  width: 40px;
+  /* Fixed width matching collapsed sidebar center */
   height: 40px;
   flex-shrink: 0;
 }
@@ -70,7 +76,8 @@
 .nav-item.active-link .nav-link {
   background: var(--item-active-bg);
   color: var(--text-active);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); /* Glow effect */
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  /* Glow effect */
 }
 
 /* Text Animation */
@@ -87,6 +94,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .hover\:surface-overlay-20:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.1);
@@ -95,10 +103,49 @@
 
 /* --- Utility Animations --- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-5px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .fade-in-text {
   animation: fadeIn 0.5s ease;
+}
+
+@media (max-width: 991px) {
+  :host {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width-collapsed);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transition: width 0.4s ease;
+  }
+
+  .sidebar.expanded {
+    width: var(--sidebar-width-expanded);
+  }
 }

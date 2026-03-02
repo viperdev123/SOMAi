@@ -1,4 +1,34 @@
-<nav class="sidebar shadow-6" [class.expanded]="isExpanded">
+<div class="block lg:hidden w-full sticky top-0 z-5">
+  <p-menubar [model]="items"
+    styleClass="border-none border-bottom-1 surface-border border-round-none px-3 py-2 bg-gray-900">
+    <ng-template pTemplate="start">
+      <div class="flex align-items-center gap-2">
+        <img src="android-chrome-512x512.png" alt="Logo" class="w-2rem h-auto border-round-sm">
+        <span class="font-bold text-xl text-white">SOMAi</span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="end">
+      <div class="flex align-items-center gap-2">
+        <ng-container *ngIf="isLoggedIn; else mobileGuestTemplate">
+          <div class="relative cursor-pointer" (click)="displaySocialDialog = true">
+            <img [src]="currentUser?.picture || 'assets/default-avatar.png'"
+              class="border-circle border-1 border-primary-400" style="width: 35px; height: 35px; object-fit: cover;">
+            <span class="absolute bottom-0 right-0 block border-circle bg-green-500 border-1 border-white"
+              style="width: 8px; height: 8px;"></span>
+          </div>
+        </ng-container>
+
+        <ng-template #mobileGuestTemplate>
+          <button pButton icon="pi pi-sign-in" (click)="goToLogin()"
+            class="p-button-rounded p-button-text text-white"></button>
+        </ng-template>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
+
+<nav class="sidebar shadow-6 hidden lg:flex" [class.expanded]="isExpanded">
   <div class="sidebar-header flex align-items-center py-4" [class.justify-content-between]="isExpanded"
     [class.justify-content-center]="!isExpanded" [class.px-3]="isExpanded">
     <div class="logo-wrapper flex align-items-center gap-2 overflow-hidden" *ngIf="isExpanded">
@@ -11,13 +41,13 @@
       <i [class]="isExpanded ? 'pi pi-angle-left text-lg' : 'pi pi-bars text-xl'"></i>
     </button>
   </div>
+
   <div class="nav-container flex-grow-1 overflow-y-auto overflow-x-hidden py-2 custom-scrollbar">
     <ul class="list-none p-0 m-0 flex flex-column gap-2 px-2">
       <li class="nav-item" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
         <a routerLink="/home"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
-          <div class="icon-wrapper flex align-items-center justify-content-center">
-            <i class="pi pi-home text-xl"></i>
+          <div class="icon-wrapper flex align-items-center justify-content-center"><i class="pi pi-home text-xl"></i>
           </div>
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">หน้าหลัก</span>
         </a>
@@ -25,17 +55,15 @@
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/create"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
-          <div class="icon-wrapper flex align-items-center justify-content-center">
-            <i class="pi pi-plus-circle text-xl"></i>
-          </div>
+          <div class="icon-wrapper flex align-items-center justify-content-center"><i
+              class="pi pi-plus-circle text-xl"></i></div>
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">สร้าง Campaign</span>
         </a>
       </li>
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/reviews"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
-          <div class="icon-wrapper flex align-items-center justify-content-center">
-            <i class="pi pi-pencil text-xl"></i>
+          <div class="icon-wrapper flex align-items-center justify-content-center"><i class="pi pi-pencil text-xl"></i>
           </div>
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">รีวิว &
             แก้ไขดราฟ</span>
@@ -44,8 +72,7 @@
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/history"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
-          <div class="icon-wrapper flex align-items-center justify-content-center">
-            <i class="pi pi-history text-xl"></i>
+          <div class="icon-wrapper flex align-items-center justify-content-center"><i class="pi pi-history text-xl"></i>
           </div>
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">ประวัติ</span>
         </a>
@@ -53,9 +80,8 @@
       <li class="nav-item" routerLinkActive="active-link">
         <a routerLink="/about-us"
           class="nav-link cursor-pointer flex align-items-center border-round-lg overflow-hidden transition-all transition-duration-200">
-          <div class="icon-wrapper flex align-items-center justify-content-center">
-            <i class="pi pi-info-circle text-xl"></i>
-          </div>
+          <div class="icon-wrapper flex align-items-center justify-content-center"><i
+              class="pi pi-info-circle text-xl"></i></div>
           <span class="nav-text font-medium white-space-nowrap ml-3" [class.hidden]="!isExpanded">เกี่ยวกับเรา</span>
         </a>
       </li>
@@ -63,20 +89,15 @@
   </div>
 
   <div class="sidebar-profile mt-auto p-3">
-
     <div
       class="relative w-full border-round-2xl transition-all transition-duration-300 overflow-hidden cursor-pointer group"
-      [ngClass]="{
-         'bg-white-alpha-5 hover:bg-white-alpha-10 border-1 border-white-alpha-10': isLoggedIn,
-         'p-0': !isExpanded,
-         'p-2': isExpanded
-       }" style="backdrop-filter: blur(8px); min-height: 60px;">
+      [ngClass]="{'bg-white-alpha-5 hover:bg-white-alpha-10 border-1 border-white-alpha-10': isLoggedIn, 'p-0': !isExpanded, 'p-2': isExpanded}"
+      style="backdrop-filter: blur(8px); min-height: 60px;">
 
       <ng-container *ngIf="isLoggedIn; else guestTemplate">
         <div class="flex align-items-center"
           [ngClass]="{'justify-content-center': !isExpanded, 'justify-content-between': isExpanded}"
           (click)="displaySocialDialog = true">
-
           <div class="relative flex-shrink-0 transition-all transition-duration-300"
             [ngClass]="{'mx-auto': !isExpanded}">
             <img [src]="currentUser?.picture || 'assets/default-avatar.png'"
@@ -90,19 +111,16 @@
 
           <div *ngIf="isExpanded" class="flex flex-column ml-3 flex-1 overflow-hidden fade-in-left">
             <span
-              class="text-white text-sm font-bold white-space-nowrap overflow-hidden text-overflow-ellipsis tracking-wide">
-              {{ currentUser.name }}
-            </span>
-            <span class="text-gray-400 text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis mt-1">
-              {{ currentUser.email }}
-            </span>
+              class="text-white text-sm font-bold white-space-nowrap overflow-hidden text-overflow-ellipsis tracking-wide">{{
+              currentUser.name }}</span>
+            <span class="text-gray-400 text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis mt-1">{{
+              currentUser.email }}</span>
           </div>
 
           <button *ngIf="isExpanded" (click)="openLogoutConfirm($event)" pTooltip="Sign Out" tooltipPosition="left"
             class="p-button-rounded p-button-text p-button-secondary text-gray-400 hover:text-red-400 hover:bg-white-alpha-10 transition-colors transition-duration-200 w-2rem h-2rem flex align-items-center justify-content-center border-none ml-1">
             <i class="pi pi-power-off text-sm"></i>
           </button>
-
         </div>
       </ng-container>
 
@@ -111,69 +129,70 @@
           [ngClass]="{'justify-content-center': !isExpanded, 'px-2': isExpanded}">
           <button pButton pRipple (click)="goToLogin()"
             class="p-0 border-none transition-all transition-duration-200 flex align-items-center justify-content-center overflow-hidden"
-            [ngClass]="{
-              'w-full py-2 bg-gray-900 text-white hover:bg-gray-800 border-round-lg shadow-2 gap-2': isExpanded,
-              'w-3rem h-3rem p-button-rounded p-button-text text-white hover:bg-white-alpha-10': !isExpanded
-            }">
+            [ngClass]="{'w-full py-2 bg-gray-900 text-white hover:bg-gray-800 border-round-lg shadow-2 gap-2': isExpanded, 'w-3rem h-3rem p-button-rounded p-button-text text-white hover:bg-white-alpha-10': !isExpanded}">
             <i class="pi pi-sign-in text-xl"></i>
             <span *ngIf="isExpanded" class="font-semibold white-space-nowrap fade-in">Log In</span>
           </button>
-
         </div>
       </ng-template>
-
     </div>
   </div>
-
 </nav>
 
 <p-dialog [(visible)]="displaySocialDialog" [modal]="true" [draggable]="false" [resizable]="false" [showHeader]="false"
-  styleClass="p-0 border-round-2xl overflow-hidden">
+  [style]="{ width: '450px' }" [breakpoints]="{ '960px': '75vw', '641px': '90vw' }"
+  styleClass="p-0 border-round-2xl overflow-hidden shadow-6">
 
   <div class="relative bg-white pt-5 pb-4 px-4 flex flex-column align-items-center border-bottom-1 surface-border">
-
-    <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-plain absolute top-0 right-0 m-3"
+    <button pButton icon="pi pi-times"
+      class="p-button-rounded p-button-text p-button-plain absolute top-0 right-0 m-2 sm:m-3"
       (click)="displaySocialDialog = false"></button>
 
     <div class="relative mb-3">
-      <img [src]="currentUser?.picture" class="w-6rem h-6rem border-circle shadow-4 border-2 border-white">
+      <img [src]="currentUser?.picture || 'assets/default-avatar.png'"
+        class="w-5rem h-5rem sm:w-6rem sm:h-6rem border-circle shadow-4 border-2 border-white object-cover">
       <div class="absolute bottom-0 right-0 w-1rem h-1rem border-circle bg-green-500 border-2 border-white"></div>
     </div>
 
-    <div class="text-center">
-      <h2 class="text-900 font-bold text-xl m-0 mb-1">{{ currentUser?.name }}</h2>
-      <p class="text-600 text-sm m-0">{{ currentUser?.email }}</p>
+    <div class="text-center px-2">
+      <h2 class="text-900 font-bold text-lg sm:text-xl m-0 mb-1 line-height-2">{{ currentUser?.name }}</h2>
+      <p class="text-600 text-sm m-0 white-space-normal overflow-hidden text-overflow-ellipsis">{{ currentUser?.email }}
+      </p>
     </div>
   </div>
 
-  <div class="surface-ground p-4" style="max-height: 400px; overflow-y: auto; min-width: 200px; width: 35vw;">
-    <p class="text-500 font-semibold text-xs uppercase mb-3 px-1">Connected Accounts</p>
-    <div class="flex flex-column gap-3">
+  <div class="surface-ground p-3 sm:p-4" style="max-height: 70vh; overflow-y: auto;">
+    <p class="text-500 font-semibold text-xs uppercase mb-3 px-1 tracking-wider">Connected Accounts</p>
+
+    <div class="flex flex-column gap-2 sm:gap-3">
       <div *ngFor="let social of socialPlatforms"
-        class="surface-card p-3 border-round-xl shadow-1 flex align-items-center justify-content-between transition-all transition-duration-200 hover:shadow-2"
+        class="surface-card p-2 sm:p-3 border-round-xl shadow-1 flex align-items-center justify-content-between transition-all transition-duration-200 hover:shadow-2"
         [ngClass]="{'border-left-3 border-blue-500': social.connected}">
 
-        <div class="flex align-items-center gap-3">
-          <div class="flex align-items-center justify-content-center border-round-lg w-3rem h-3rem"
+        <div class="flex align-items-center gap-2 sm:gap-3">
+          <div
+            class="flex align-items-center justify-content-center border-round-lg w-2.5rem h-2.5rem sm:w-3rem sm:h-3rem flex-shrink-0"
             [ngClass]="social.connected ? social.bgColor : 'surface-100'">
-            <i [class]="social.icon + ' text-xl'" [ngClass]="social.connected ? 'text-white' : 'text-500'"></i>
+            <i [class]="social.icon + ' text-lg sm:text-xl'"
+              [ngClass]="social.connected ? 'text-white' : 'text-500'"></i>
           </div>
 
           <div class="flex flex-column">
-            <span class="font-semibold text-900 text-sm">{{ social.name }}</span>
+            <span class="font-bold text-800 text-sm sm:text-base">{{ social.name }}</span>
             <span class="text-xs flex align-items-center gap-1"
               [ngClass]="social.connected ? 'text-green-600' : 'text-500'">
-              <i class="pi" [ngClass]="social.connected ? 'pi-check-circle text-green-600' : 'pi-minus-circle'"></i>
-              {{ social.connected ? 'Active' : 'ยังไม่ได้เชื่อมต่อ' }}
+              <i class="pi" [ngClass]="social.connected ? 'pi-check-circle' : 'pi-minus-circle'"
+                style="font-size: 0.7rem"></i>
+              {{ social.connected ? 'เชื่อมต่อแล้ว' : 'ยังไม่ได้เชื่อมต่อ' }}
             </span>
           </div>
         </div>
 
         <button pButton pRipple [icon]="social.connected ? 'pi pi-power-off' : 'pi pi-link'"
-          [label]="social.connected ? '' : 'Connect'" class="p-button-rounded p-button-sm h-2rem"
-          [class]="social.connected ? 'p-button-text p-button-secondary w-2rem px-0' : 'p-button-text p-button-primary px-3'"
-          (click)="toggleConnection(social)" [pTooltip]="social.connected ? 'ยกเลิกเชื่อมต่อ' : 'เชื่อมบัญชี'"
-          [disabled]="!social.enabled" tooltipPosition="left" severity="secondary">
+          [label]="social.connected ? '' : (isMobile ? '' : 'Connect')" class="p-button-rounded p-button-sm"
+          [class]="social.connected ? 'p-button-text p-button-secondary w-2.5rem h-2.5rem' : 'p-button-text p-button-primary px-3 h-2.5rem'"
+          (click)="toggleConnection(social)" [disabled]="!social.enabled"
+          [pTooltip]="social.connected ? 'ยกเลิกการเชื่อมต่อ' : 'เชื่อมต่อบัญชี'" tooltipPosition="left">
         </button>
       </div>
     </div>
@@ -202,7 +221,8 @@
     <ng-template pTemplate="footer">
       <div class="flex justify-content-end gap-2">
         <p-button label="Cancel" severity="secondary" (click)="visibleLogoutConfirm = false" />
-        <p-button label="Log Out" (click)="logout()" severity="danger" [outlined]="true" icon="pi pi-sign-out" styleClass="w-10rem" />
+        <p-button label="Log Out" (click)="logout()" severity="danger" [outlined]="true" icon="pi pi-sign-out"
+          styleClass="w-10rem" />
       </div>
     </ng-template>
 

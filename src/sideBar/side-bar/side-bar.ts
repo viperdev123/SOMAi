@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MenuItem } from 'primeng/api';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
@@ -8,8 +8,10 @@ import { ButtonModule } from 'primeng/button';
 import { SocialMediaService } from '../../social-media-service';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../app/layouts/auth-layout/service/auth-service';
-import { environment } from '../../environments/environment';
 import { HistoryService } from '../../history/service/history-service';
+import { MenubarModule } from 'primeng/menubar';
+import { AvatarModule } from 'primeng/avatar';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 interface SocialPlatformUI {
   id: string;
@@ -28,7 +30,9 @@ interface SocialPlatformUI {
     CommonModule,
     TooltipModule,
     DialogModule,
-    ButtonModule
+    ButtonModule,
+    MenubarModule,
+    AvatarModule
   ],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.css',
@@ -39,8 +43,16 @@ export class SideBar implements OnInit, OnDestroy {
     private socialService: SocialMediaService,
     private authService: AuthService,
     private router: Router,
-    private HistoryService: HistoryService
+    private HistoryService: HistoryService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
+
+  get isMobile(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      return window.innerWidth <= 641;
+    }
+    return false;
+  }
 
   items: MenuItem[] | undefined;
   isExpanded = true;
@@ -48,6 +60,7 @@ export class SideBar implements OnInit, OnDestroy {
   displaySocialDialog: boolean = false;
   private subscription: Subscription = new Subscription();
   visibleLogoutConfirm: boolean = false;
+  accessToken: string | null = null;
 
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600', enabled: true },
@@ -60,12 +73,22 @@ export class SideBar implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.items = [
-      { label: 'Dashboard', icon: 'pi pi-home', routerLink: '/dashboard' },
-      { label: 'Create Campaign', icon: 'pi pi-plus-circle', routerLink: '/create' },
-      { label: 'My Campaigns', icon: 'pi pi-list', routerLink: '/campaigns' },
-      { label: 'Settings', icon: 'pi pi-cog', routerLink: '/settings' }
+      { label: 'หน้าหลัก', icon: 'pi pi-home', routerLink: '/home' },
+      { label: 'สร้าง Campaign', icon: 'pi pi-plus-circle', routerLink: '/create' },
+      { label: 'รีวิว & แก้ไขดราฟ', icon: 'pi pi-pencil', routerLink: '/reviews' },
+      { label: 'ประวัติ', icon: 'pi pi-history', routerLink: '/history' },
+      { label: 'เกี่ยวกับเรา', icon: 'pi pi-info-circle', routerLink: '/about-us' }
     ];
-
+    this.accessToken = this.authService.getAccessToken();
+    if (this.accessToken) {
+      this.items.push({
+        label: 'ออกจากระบบ',
+        icon: 'pi pi-power-off',
+        command: (event) => {
+          this.visibleLogoutConfirm = true;
+        }
+      });
+    }
     this.currentUser = this.authService.getCurrentUser();
     this.subscription.add(
       this.socialService.openDialog$.subscribe(() => {
