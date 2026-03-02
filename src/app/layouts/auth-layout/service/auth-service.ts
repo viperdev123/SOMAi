@@ -150,6 +150,9 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     this.router.navigate(['/home'], { replaceUrl: true });
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.reload();
+    }
   }
 
   refreshToken() {

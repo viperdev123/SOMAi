@@ -36,7 +36,9 @@ export class HistoryPage implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.accessToken = localStorage.getItem('accessToken') || '';
     }
-    this.loadHistory();
+    if (this.accessToken) {
+      this.loadHistory();
+    }
   }
 
   loadHistory() {
