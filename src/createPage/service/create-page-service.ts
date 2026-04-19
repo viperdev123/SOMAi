@@ -8,14 +8,17 @@ import { environment } from '../../environments/environment';
 })
 export class CreatePageService {
 
-  private token = localStorage.getItem('accessToken');
   private url = environment.googleLoginUrl;
 
   constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
+    let token = null;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem('accessToken');
+    }
     return new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
@@ -24,7 +27,7 @@ export class CreatePageService {
     return this.http.post<any>(`${this.url}/contents`, payload, { headers: this.getHeaders() });
   }
 
-  
+
 
 }
 

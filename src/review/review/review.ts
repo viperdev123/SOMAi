@@ -86,6 +86,8 @@ export class Review implements OnDestroy, OnInit {
   selectedPlatform!: string;
   loadingRegen = false;
   loadingSubmit = false;
+  postPlatform: string = '';
+  approvedPlatforms = new Set<string>();
 
   ngOnInit() {
     this.initForms();
@@ -116,32 +118,56 @@ export class Review implements OnDestroy, OnInit {
     });
   }
 
-  showDialog() {
+  showDialog(platform: string) {
+    this.postPlatform = platform;
     this.visible = true;
   }
 
-  onSubmit(platform: string) {
+  onSubmit() {
     try {
       this.loadingSubmit = true;
       const formData = new FormData();
-      formData.append('content', this.facebookCaption);
-      formData.append('platform', platform);
-      if (this.uploadedImages && this.uploadedImages.length > 0) {
-        this.uploadedImages.forEach((img: any) => {
-          if (img.file) {
-            formData.append('image', img.file);
-          }
-        });
-      }
+      const captionMap: Record<string, string> = {
+        'Facebook': this.facebookCaption,
+        'Instagram': this.instagramCaption,
+        'Tiktok': this.tiktokCaption,
+        'X': this.twitterCaption
+      };
+
+      const imageMap: Record<string, ImageItem[]> = {
+        'Facebook': this.uploadedImages,
+        'Instagram': this.igImages,
+        'Tiktok': this.tiktokImages,
+        'X': this.twitterImages
+      };
+
+      formData.append('content', captionMap[this.postPlatform] ?? '');
+      formData.append('platform', this.postPlatform);
+
+      const images = imageMap[this.postPlatform] ?? [];
+      images.forEach((img) => {
+        if (img.file) {
+          formData.append('image', img.file);
+        }
+      });
+
       this.reviewStateService.submit(formData).subscribe({
         next: (res) => {
           this.loadingSubmit = false;
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'โพสต์สำเร็จ' });
           this.visible = false;
-          this.reviewStateService.clear();
-          setTimeout(() => {
-            this.router.navigate(['/history']);
-          }, 1500);
+
+          // ลบ platform ที่ approved ออกจาก availablePlatforms
+          this.approvedPlatforms.add(this.postPlatform);
+          this.availablePlatforms.delete(this.postPlatform);
+
+          // ถ้าหมดทุก platform แล้วค่อย redirect
+          if (this.availablePlatforms.size === 0) {
+            this.reviewStateService.clear();
+            setTimeout(() => {
+              this.router.navigate(['/history']);
+            }, 1500);
+          }
         },
         error: (err) => {
           this.loadingSubmit = false;
@@ -518,15 +544,19 @@ export class Review implements OnDestroy, OnInit {
         switch (this.selectedPlatform) {
           case "Facebook":
             this.facebookCaption = text;
+            this.facebookForm.patchValue({ postText: text });
             break;
           case "Instagram":
             this.instagramCaption = text;
+            this.instagramForm.patchValue({ postText: text });
             break;
           case "Tiktok":
             this.tiktokCaption = text;
+            this.tiktokForm.patchValue({ postText: text });
             break;
           case "X":
             this.twitterCaption = text;
+            this.twitterForm.patchValue({ postText: text });
             break;
         }
         this.messageService.add({ severity: 'success', summary: 'สำเร็จ', detail: `Regenerate caption ${this.selectedPlatform} สำเร็จแล้ว` });

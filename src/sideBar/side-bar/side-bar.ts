@@ -64,7 +64,7 @@ export class SideBar implements OnInit, OnDestroy {
 
   private platformConfigs = [
     { id: 'facebook', name: 'Facebook Page', icon: 'pi pi-facebook', bgColor: 'bg-blue-600', enabled: true },
-    { id: 'instagram', name: 'Instagram Business', icon: 'pi pi-instagram', bgColor: 'bg-pink-600', enabled: false },
+    { id: 'instagram', name: 'Instagram Business', icon: 'pi pi-instagram', bgColor: 'bg-pink-600', enabled: true },
     { id: 'tiktok', name: 'TikTok', icon: 'pi pi-tiktok', bgColor: 'bg-gray-900', enabled: false },
     { id: 'x', name: 'X (Twitter)', icon: 'pi pi-twitter', bgColor: 'bg-gray-900', enabled: false }
   ];
@@ -122,8 +122,7 @@ export class SideBar implements OnInit, OnDestroy {
   }
 
   toggleConnection(platform: SocialPlatformUI) {
-
-    if (platform.id === 'facebook' && !platform.connected) {
+    if ((platform.id === 'facebook' || platform.id === 'instagram') && !platform.connected) {
       this.openFacebookPopup();
       return;
     }
@@ -171,6 +170,8 @@ export class SideBar implements OnInit, OnDestroy {
     try {
       await this.authService.connectFacebookPopup();
       this.socialService.setConnected('facebook', true);
+      this.socialService.setConnected('instagram', true);
+      window.location.reload();
     } catch (err) {
       console.error('Facebook connect failed:', err);
     }

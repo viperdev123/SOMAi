@@ -60,7 +60,6 @@ export class CreatePage implements OnInit, OnDestroy {
   isAuthenticated: boolean = false;
   job_id!: any;
   private subscription: Subscription = new Subscription();
-  private pollingSub!: Subscription;
   accessToken!: any;
   refreshToken!: any;
 

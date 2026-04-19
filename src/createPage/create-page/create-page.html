@@ -6,8 +6,8 @@
                 style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb, #9333ea);">
                 <i class="pi pi-sparkles text-xl"></i>
             </div>
-            <h1 class="text-3xl font-bold text-900 m-0 mb-2">เครื่องมือสร้างคอนเทนต์ Marketing ด้วย AI</h1>
-            <span class="text-600">สร้าง Content ที่โดนใจกลุ่มเป้าหมายของคุณได้ภายในไม่กี่วินาที</span>
+            <h1 class="text-3xl font-bold text-900 m-0 mb-2">เครื่องมือสร้างคอนเทนต์การตลาด ด้วย AI</h1>
+            <span class="text-600">สร้างคอนเทนต์ที่โดนใจกลุ่มเป้าหมายของคุณได้ภายในไม่กี่วินาที</span>
         </div>
         <div class="p-5">
             <form [formGroup]="createForm">
@@ -24,7 +24,7 @@
                     <small class="text-500 mt-1 block">ใครคือลูกค้าเป้าหมายของคุณ?</small>
                 </div>
                 <div class="field mb-4">
-                    <label class="font-semibold text-900 block mb-2">Platforms</label>
+                    <label class="font-semibold text-900 block mb-2">แพลตฟอร์ม</label>
                     <div class="grid formgrid">
                         <div class="col-12 md:col-3 mb-2 md:mb-0" *ngFor="let platform of platforms">
 
@@ -72,13 +72,13 @@
                 </div>
 
                 <div class="field mb-5">
-                    <label class="font-semibold text-900 block mb-2">Key Message</label>
+                    <label class="font-semibold text-900 block mb-2">จุดเด่นของสินค้า</label>
                     <textarea pTextarea formControlName="keyMessage" rows="5" class="w-full p-3 border-round-lg"
                         placeholder="ตย. ไก่ย่างเคลือบน้ำผึ้ง หอมถ่าน ราคาถูก"></textarea>
                     <div class="flex justify-content-between mt-1">
                         <small class="text-500">สิ่งที่ทำให้สินค้าของคุณโดดเด่น</small>
-                        <small class="text-500">{{ 500 - (createForm.get('keyMessage')?.value?.length || 0) }}
-                            characters left</small>
+                        <small class="text-500">เหลืออีก {{ 500 - (createForm.get('keyMessage')?.value?.length || 0) }}
+                            ตัวอักษร</small>
                     </div>
                 </div>
 

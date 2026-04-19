@@ -140,7 +140,7 @@
                 <div class="p-3 flex gap-2 border-top-1 surface-border container-footer-btn mt-auto">
                     <button class="reGenerate-btn w-6 bg-white" (click)="showRegenContentDialog('Facebook')"><i
                             class="pi pi-sync"></i> Regenerate</button>
-                    <button (click)="showDialog()" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
+                    <button (click)="showDialog('Facebook')" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
                         Approve</button>
                 </div>
             </div>
@@ -239,7 +239,8 @@
                 <div class="p-3 flex gap-2 border-top-1 surface-border mt-auto">
                     <button class="reGenerate-btn w-6 bg-white" (click)="showRegenContentDialog('Instagram')"><i
                             class="pi pi-sync"></i> Regenerate</button>
-                    <button class="ai-generate-btn w-6"><i class="pi pi-check"></i> Approve</button>
+                    <button (click)="showDialog('Instagram')" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
+                        Approve</button>
                 </div>
 
             </div>
@@ -343,9 +344,8 @@
                         (click)="showRegenContentDialog('Tiktok')">
                         <i class="pi pi-sync mr-1"></i> Regenerate
                     </button>
-                    <button class="ai-generate-btn text-xs w-6 justify-content-center">
-                        <i class="pi pi-check mr-1"></i> Approve
-                    </button>
+                    <button (click)="showDialog('Tiktok')" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
+                        Approve</button>
                 </div>
             </div>
         </div>
@@ -498,7 +498,7 @@
                     <button class="reGenerate-btn text-xs w-6 justify-content-center"
                         (click)="showRegenContentDialog('X')"><i class="pi pi-sync mr-1"></i>
                         Regenerate</button>
-                    <button class="ai-generate-btn text-xs w-6 justify-content-center"><i class="pi pi-check mr-1"></i>
+                    <button (click)="showDialog('X')" class="ai-generate-btn w-6"><i class="pi pi-check"></i>
                         Approve</button>
                 </div>
             </div>
@@ -592,8 +592,8 @@
         <ng-template pTemplate="footer">
             <div class="flex justify-content-end gap-2">
                 <p-button label="Cancel" severity="secondary" (click)="visible = false" [disabled]="loadingSubmit" />
-                <p-button label="Confirm" (click)="onSubmit('Facebook')" severity="success" [outlined]="true"
-                    icon="pi pi-check" [loading]="loadingSubmit" />
+                <p-button label="Confirm" (click)="onSubmit()" severity="success" [outlined]="true" icon="pi pi-check"
+                    [loading]="loadingSubmit" />
             </div>
         </ng-template>
 
@@ -668,7 +668,8 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="visibleRegenDialog = false" [disabled]="loadingRegen">
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="visibleRegenDialog = false"
+            [disabled]="loadingRegen">
         </button>
         <button pButton [label]="loadingRegen ? 'Regenerating...' : 'Regenerate Now'"
             [icon]="loadingRegen ? 'pi pi-spin pi-spinner' : 'pi pi-sparkles'" class="p-button-primary"
