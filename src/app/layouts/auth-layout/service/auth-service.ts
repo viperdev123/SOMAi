@@ -46,8 +46,9 @@ export class AuthService {
       }
 
       const handler = (event: MessageEvent) => {
-        const backendOrigin = new URL(this.url).origin;
 
+        //ป้องกัน massage มากจาก url อื่น
+        const backendOrigin = new URL(this.url).origin;
         if (event.origin !== backendOrigin) return;
 
         const { accessToken, refreshToken, user, success } = event.data;
