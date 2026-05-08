@@ -23,6 +23,7 @@ export class AuthService {
   loginGooglePopup(): Promise<void> {
     return new Promise((resolve, reject) => {
 
+      //กรณีไม่ได้อยู่ Browser
       if (!this.isBrowser) {
         reject('Not in browser');
         return;
